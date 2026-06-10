@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PNC RM Intelligence</title>
+<style>
+:root {
+  --bg: #0B1929;
+  --surface: #132338;
+  --card: #1A2F4A;
+  --border: rgba(255,255,255,0.07);
+  --text: #E8F0FA;
+  --muted: #7A9ABF;
+  --blue: #2A73D2;
+  --blue-light: #3D8EEF;
+  --orange: #E87928;
+  --green: #2DB87A;
+  --yellow: #F5A623;
+  --red: #E84C3D;
+  --purple: #7B5EA7;
+  --sidebar: 220px;
+  --header: 56px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed; left: 0; top: 0; bottom: 0; width: var(--sidebar);
+  background: #080F1A; border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; padding: 0; z-index: 100;
+}
+.sidebar-logo {
+  padding: 18px 20px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.logo-icon {
+  width: 32px; height: 32px; background: var(--blue); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 14px; color: white;
+}
+.logo-text { font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: 0.02em; }
+.logo-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
+.sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+.nav-group-label {
+  font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--muted); padding: 12px 20px 6px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px; padding: 9px 20px;
+  cursor: pointer; font-size: 13px; color: #8BA4C0; border-left: 2px solid transparent;
+  transition: all 0.15s; text-decoration: none;
+}
+.nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+.nav-item.active { background: rgba(42,115,210,0.12); color: var(--blue-light); border-left-color: var(--blue); font-weight: 500; }
+.nav-icon { width: 16px; text-align: center; flex-shrink: 0; }
+.nav-badge { margin-left: auto; background: var(--orange); color: white; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px; }
+.sidebar-user { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.user-avatar { width: 28px; height: 28px; background: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+.user-info { flex: 1; }
+.user-name { font-size: 12px; font-weight: 600; }
+.user-role { font-size: 10px; color: var(--muted); }
+
+/* ── MAIN ── */
+.main { margin-left: var(--sidebar); min-height: 100vh; }
+.view { display: none; }
+.view.active { display: block; }
+
+/* ── TOP BAR ── */
+.topbar {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 0 28px; height: var(--header); display: flex; align-items: center;
+  gap: 16px; position: sticky; top: 0; z-index: 50;
+}
+.topbar-title { font-size: 16px; font-weight: 600; flex: 1; }
+.topbar-meta { font-size: 12px; color: var(--muted); }
+.topbar-btn {
+  padding: 7px 14px; border-radius: 6px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: none; display: flex; align-items: center; gap: 6px;
+}
+.btn-primary { background: var(--blue); color: white; }
+.btn-secondary { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+.btn-primary:hover { background: var(--blue-light); }
+
+/* ── CONTENT ── */
+.content { padding: 24px 28px; }
+
+/* ── STATS ROW ── */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+.stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+.stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; margin-bottom: 8px; }
+.stat-value { font-size: 28px; font-weight: 800; line-height: 1; }
+.stat-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.stat-blue { color: var(--blue-light); }
+.stat-orange { color: var(--orange); }
+.stat-green { color: var(--green); }
+.stat-yellow { color: var(--yellow); }
+
+/* ── SECTION ── */
+.section { margin-bottom: 24px; }
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.section-link { font-size: 12px; color: var(--blue-light); cursor: pointer; }
+
+/* ── FAB FIVE ── */
+.fab-five-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.fab-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 16px; cursor: pointer; transition: all 0.15s; position: relative;
+}
+.fab-card:hover { border-color: var(--blue); box-shadow: 0 4px 20px rgba(42,115,210,0.15); transform: translateY(-1px); }
+.fab-rank { font-size: 10px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+.fab-rank-1 .fab-rank { color: var(--orange); }
+.fab-name { font-size: 13px; font-weight: 700; line-height: 1.3; margin-bottom: 6px; }
+.fab-tier { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 4px; margin-bottom: 10px; }
+.tier-1 { background: rgba(232,121,40,0.15); color: var(--orange); }
+.tier-2 { background: rgba(42,115,210,0.15); color: var(--blue-light); }
+.tier-3 { background: rgba(122,154,191,0.15); color: var(--muted); }
+.fab-score-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.fab-score-label { font-size: 10px; color: var(--muted); }
+.fab-score { font-size: 18px; font-weight: 800; color: var(--text); }
+.fab-urgency-bar { height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; margin-bottom: 10px; }
+.fab-urgency-fill { height: 3px; border-radius: 2px; background: var(--blue); }
+.fab-rank-1 .fab-urgency-fill { background: var(--orange); }
+.fab-reason { font-size: 11px; color: var(--muted); line-height: 1.5; }
+.fab-reason strong { color: var(--text); }
+.fab-action { margin-top: 12px; }
+.fab-btn { width: 100%; padding: 7px; border: 1px solid var(--border); background: transparent; border-radius: 6px; font-size: 11px; font-weight: 600; color: var(--muted); cursor: pointer; transition: all 0.15s; }
+.fab-btn:hover { border-color: var(--blue); color: var(--blue-light); background: rgba(42,115,210,0.08); }
+
+/* ── TABLE ── */
+.data-table { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.table-search { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.table-search input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-size: 13px; color: var(--text); outline: none; }
+.table-search input::placeholder { color: var(--muted); }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; padding: 10px 16px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); }
+td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid var(--border); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
+.td-name { font-weight: 600; color: var(--text); }
+.td-name:hover { color: var(--blue-light); }
+.kyc-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; }
+.kyc-current { background: rgba(45,184,122,0.15); color: var(--green); }
+.kyc-due-soon { background: rgba(245,166,35,0.15); color: var(--yellow); }
+.kyc-overdue { background: rgba(232,76,61,0.15); color: var(--red); }
+.urgency-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+.urgency-high { background: var(--orange); }
+.urgency-med { background: var(--yellow); }
+.urgency-low { background: var(--muted); }
+
+/* ── CLIENT DETAIL ── */
+.client-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 20px 28px 0; }
+.client-breadcrumb { font-size: 12px; color: var(--muted); margin-bottom: 12px; cursor: pointer; }
+.client-breadcrumb span { color: var(--blue-light); }
+.client-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+.client-name { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
+.client-meta { font-size: 13px; color: var(--muted); }
+.client-meta strong { color: var(--text); }
+.client-actions { display: flex; gap: 10px; }
+.client-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+.client-stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+.client-stat-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+.client-stat-value { font-size: 20px; font-weight: 800; }
+.client-stat-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.alert-badge { display: flex; align-items: center; gap: 6px; background: rgba(232,76,61,0.12); border: 1px solid rgba(232,76,61,0.3); border-radius: 6px; padding: 6px 10px; margin-top: 8px; font-size: 11px; color: var(--red); font-weight: 600; }
+.health-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.health-item { display: flex; align-items: flex-start; gap: 8px; }
+.health-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+.health-dot-green { background: var(--green); }
+.health-dot-yellow { background: var(--yellow); }
+.health-dot-red { background: var(--red); }
+.health-dot-gray { background: var(--muted); }
+.health-label { font-size: 11px; font-weight: 600; margin-bottom: 2px; }
+.health-sub { font-size: 10px; color: var(--muted); line-height: 1.4; }
+
+/* ── TABS ── */
+.tabs { display: flex; gap: 2px; border-bottom: none; }
+.tab { padding: 10px 16px; font-size: 13px; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; transition: all 0.15s; }
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--blue-light); border-bottom-color: var(--blue); font-weight: 600; }
+.tab-content { display: none; padding: 24px 28px; }
+.tab-content.active { display: block; }
+
+/* ── SIGNALS ── */
+.signal-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; }
+.signal-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
+.signal-headline { font-size: 14px; font-weight: 600; line-height: 1.4; flex: 1; margin-right: 12px; }
+.signal-badge { flex-shrink: 0; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; }
+.signal-negative { background: rgba(232,76,61,0.15); color: var(--red); }
+.signal-watch { background: rgba(245,166,35,0.15); color: var(--yellow); }
+.signal-positive { background: rgba(45,184,122,0.15); color: var(--green); }
+.signal-meta { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+.signal-detail { font-size: 12px; color: var(--muted); line-height: 1.6; }
+.signal-action-box { background: rgba(42,115,210,0.08); border: 1px solid rgba(42,115,210,0.2); border-radius: 6px; padding: 8px 12px; margin-top: 10px; }
+.signal-action-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--blue-light); margin-bottom: 3px; }
+.signal-action-text { font-size: 12px; color: var(--text); }
+
+/* ── NBA ── */
+.nba-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; }
+.nba-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.nba-type { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.nba-type-pitch { color: var(--blue-light); }
+.nba-type-renewal { color: var(--orange); }
+.nba-type-risk { color: var(--red); }
+.nba-confidence { display: flex; align-items: center; gap: 8px; }
+.confidence-label { font-size: 10px; color: var(--muted); }
+.confidence-score { font-size: 18px; font-weight: 800; }
+.confidence-high { color: var(--green); }
+.confidence-med { color: var(--yellow); }
+.nba-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.nba-desc { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 10px; }
+.nba-signal-ref { font-size: 11px; color: var(--blue-light); cursor: pointer; }
+.nba-expiry { font-size: 10px; color: var(--muted); }
+
+/* ── ACTIVITY ── */
+.activity-item { display: flex; gap: 14px; margin-bottom: 16px; }
+.activity-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+.activity-icon-meeting { background: rgba(42,115,210,0.2); }
+.activity-icon-call { background: rgba(45,184,122,0.2); }
+.activity-icon-commitment { background: rgba(232,121,40,0.2); }
+.activity-body { flex: 1; }
+.activity-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+.activity-meta { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.activity-summary { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.commitment-alert { background: rgba(232,121,40,0.1); border: 1px solid rgba(232,121,40,0.25); border-radius: 6px; padding: 8px 12px; margin-top: 6px; font-size: 11px; color: var(--orange); }
+
+/* ── MEETING BRIEF ── */
+.brief-container { max-width: 860px; }
+.brief-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.brief-title-row { display: flex; align-items: center; gap: 12px; }
+.brief-title { font-size: 20px; font-weight: 800; }
+.brief-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.brief-export-btns { display: flex; gap: 8px; }
+.section-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 16px; overflow: hidden; }
+.section-card-header { padding: 14px 18px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.section-card-num { width: 22px; height: 22px; background: var(--blue); border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; }
+.section-card-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.section-card-body { padding: 18px; }
+
+.snapshot-table { width: 100%; border-collapse: collapse; }
+.snapshot-table td { padding: 8px 12px; font-size: 13px; border: 1px solid var(--border); }
+.snapshot-table td:first-child { color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; background: rgba(255,255,255,0.02); width: 160px; }
+.timing-alert { background: rgba(232,76,61,0.1); border: 1px solid rgba(232,76,61,0.3); border-radius: 6px; padding: 10px 14px; margin-top: 12px; font-size: 12px; color: var(--red); display: flex; gap: 8px; align-items: flex-start; }
+
+.win-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.win-box { border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+.win-box-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--blue-light); margin-bottom: 10px; }
+.win-item { margin-bottom: 8px; }
+.win-item-label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 3px; }
+.win-item-text { font-size: 12px; line-height: 1.5; }
+
+.room-card { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; }
+.room-name { font-size: 13px; font-weight: 700; }
+.room-role { font-size: 11px; color: var(--blue-light); margin-bottom: 8px; }
+.room-row { display: flex; gap: 8px; margin-bottom: 4px; }
+.room-row-label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; width: 90px; flex-shrink: 0; margin-top: 1px; }
+.room-row-text { font-size: 12px; color: var(--text); line-height: 1.5; }
+.watch-for { background: rgba(245,166,35,0.08); border: 1px solid rgba(245,166,35,0.2); border-radius: 4px; padding: 6px 10px; margin-top: 6px; font-size: 11px; color: var(--yellow); }
+
+.phase-block { margin-bottom: 16px; }
+.phase-header { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--blue-light); padding: 8px 0; border-bottom: 1px solid var(--border); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.phase-num { width: 20px; height: 20px; background: rgba(42,115,210,0.2); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: var(--blue-light); }
+.phase-item { display: flex; gap: 10px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+.phase-item::before { content: '—'; color: var(--muted); flex-shrink: 0; }
+.callout-box { background: rgba(42,115,210,0.08); border-left: 3px solid var(--blue); border-radius: 0 6px 6px 0; padding: 10px 14px; margin: 10px 0; }
+.callout-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--blue-light); margin-bottom: 4px; }
+.callout-text { font-size: 12px; line-height: 1.6; }
+.verbatim-box { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; margin: 10px 0; font-size: 12px; font-style: italic; line-height: 1.6; }
+
+.objection-item { margin-bottom: 14px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.objection-q { padding: 12px 14px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; color: var(--yellow); }
+.objection-why { padding: 8px 14px; font-size: 11px; color: var(--muted); border-bottom: 1px solid var(--border); }
+.objection-response { padding: 10px 14px; font-size: 12px; line-height: 1.6; }
+
+.followup-table { width: 100%; border-collapse: collapse; }
+.followup-table th { padding: 8px 12px; font-size: 10px; text-transform: uppercase; color: var(--muted); background: rgba(255,255,255,0.02); border: 1px solid var(--border); text-align: left; }
+.followup-table td { padding: 10px 12px; font-size: 12px; border: 1px solid var(--border); vertical-align: top; }
+
+.score-row { display: grid; grid-template-columns: 1fr 120px 100px; gap: 0; }
+.score-row > div { padding: 10px 12px; border: 1px solid var(--border); font-size: 12px; }
+.score-row.header > div { background: rgba(255,255,255,0.02); font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--muted); }
+.score-what { color: var(--muted); font-size: 11px; margin-top: 3px; }
+.score-input { background: rgba(255,255,255,0.04); border-radius: 4px; width: 50px; text-align: center; font-size: 14px; font-weight: 800; color: var(--muted); }
+
+/* ── GENERATE MODAL ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: center; justify-content: center; display: none; }
+.modal-overlay.visible { display: flex; }
+.modal { background: var(--card); border: 1px solid var(--border); border-radius: 14px; width: 520px; padding: 28px; }
+.modal-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+.modal-step { margin-bottom: 20px; }
+.modal-step-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 8px; }
+.option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.option-btn { padding: 10px 12px; border: 1px solid var(--border); border-radius: 7px; background: var(--surface); font-size: 12px; cursor: pointer; text-align: left; transition: all 0.15s; }
+.option-btn:hover { border-color: var(--blue); background: rgba(42,115,210,0.08); }
+.option-btn.selected { border-color: var(--blue); background: rgba(42,115,210,0.12); color: var(--blue-light); font-weight: 600; }
+.option-icon { font-size: 16px; margin-bottom: 4px; }
+.option-text { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+.progress-bar { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; margin-bottom: 20px; overflow: hidden; }
+.progress-fill { height: 100%; width: 60%; background: var(--blue); border-radius: 2px; animation: progress 1.5s ease-in-out; }
+@keyframes progress { from { width: 0%; } to { width: 60%; } }
+
+/* ── AGENT CHAT ── */
+.agent-panel { position: fixed; right: 0; top: 0; bottom: 0; width: 380px; background: #080F1A; border-left: 1px solid var(--border); display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.25s ease; z-index: 150; }
+.agent-panel.open { transform: translateX(0); }
+.agent-header { padding: 16px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.agent-title { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.agent-status { width: 8px; height: 8px; background: var(--green); border-radius: 50%; }
+.agent-close { cursor: pointer; color: var(--muted); font-size: 18px; }
+.agent-bound { padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 11px; color: var(--muted); background: rgba(255,255,255,0.02); }
+.agent-bound span { color: var(--blue-light); }
+.agent-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.msg { max-width: 90%; }
+.msg-user { align-self: flex-end; }
+.msg-agent { align-self: flex-start; }
+.msg-bubble { padding: 10px 14px; border-radius: 10px; font-size: 12px; line-height: 1.6; }
+.msg-user .msg-bubble { background: var(--blue); color: white; border-radius: 10px 10px 2px 10px; }
+.msg-agent .msg-bubble { background: var(--card); border: 1px solid var(--border); border-radius: 10px 10px 10px 2px; }
+.msg-label { font-size: 10px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
+.msg-sources { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px; }
+.source-chip { font-size: 10px; padding: 2px 7px; background: rgba(42,115,210,0.12); border: 1px solid rgba(42,115,210,0.2); border-radius: 10px; color: var(--blue-light); }
+.source-chip-web { background: rgba(45,184,122,0.1); border-color: rgba(45,184,122,0.2); color: var(--green); }
+.agent-input-area { padding: 14px; border-top: 1px solid var(--border); }
+.agent-input-row { display: flex; gap: 8px; }
+.agent-input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 12px; color: var(--text); outline: none; }
+.agent-input:focus { border-color: var(--blue); }
+.agent-send { background: var(--blue); border: none; border-radius: 8px; padding: 0 14px; color: white; cursor: pointer; font-size: 16px; }
+.agent-suggestions { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.agent-sug { font-size: 11px; padding: 7px 10px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; color: var(--muted); transition: all 0.1s; }
+.agent-sug:hover { background: rgba(42,115,210,0.08); color: var(--blue-light); border-color: rgba(42,115,210,0.3); }
+
+.agent-toggle { position: fixed; right: 20px; bottom: 24px; z-index: 140; background: var(--blue); border: none; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; box-shadow: 0 4px 20px rgba(42,115,210,0.4); transition: all 0.15s; }
+.agent-toggle:hover { background: var(--blue-light); transform: scale(1.05); }
+.agent-toggle.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">RM</div>
+    <div>
+      <div class="logo-text">RM Intelligence</div>
+      <div class="logo-sub">PNC Commercial Banking</div>
+    </div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-group-label">My Book</div>
+    <div class="nav-item active" onclick="showView('dashboard')">
+      <span class="nav-icon">◉</span> Daily Brief
+      <span class="nav-badge">5</span>
+    </div>
+    <div class="nav-item" onclick="showView('dashboard')"><span class="nav-icon">≡</span> All Clients</div>
+    <div class="nav-group-label">Intelligence</div>
+    <div class="nav-item" onclick="showView('dashboard')"><span class="nav-icon">↑</span> Market Signals <span class="nav-badge">3</span></div>
+    <div class="nav-item" onclick="showView('dashboard')"><span class="nav-icon">★</span> Opportunities</div>
+    <div class="nav-item" onclick="showView('dashboard')"><span class="nav-icon">↻</span> Renewals Due</div>
+    <div class="nav-group-label">Tools</div>
+    <div class="nav-item" onclick="toggleAgent()"><span class="nav-icon">✦</span> RM Prep Agent <span id="token-indicator" style="margin-left:auto;font-size:10px;color:var(--muted)" onclick="event.stopPropagation();promptForToken()">⚙ Connect</span></div>
+    <div class="nav-item" onclick="showView('dashboard')"><span class="nav-icon">⎘</span> Brief Archive</div>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar">JM</div>
+    <div class="user-info">
+      <div class="user-name">Jennifer Mason</div>
+      <div class="user-role">Senior RM · North Central</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- DASHBOARD VIEW -->
+  <div class="view active" id="view-dashboard">
+    <div class="topbar">
+      <div class="topbar-title">Daily Brief — Wednesday, June 11</div>
+      <div class="topbar-meta">Last refreshed: 5:48 AM</div>
+      <button class="topbar-btn btn-secondary">⚙ Preferences</button>
+      <button class="topbar-btn btn-primary" onclick="toggleAgent()">✦ Open RM Prep Agent</button>
+    </div>
+    <div class="content">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Portfolio ARR</div>
+          <div class="stat-value stat-blue">$124M</div>
+          <div class="stat-sub">Across 47 active relationships</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Renewals — 60 Days</div>
+          <div class="stat-value stat-orange">8</div>
+          <div class="stat-sub">$31.2M in renewal value</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Market Signals</div>
+          <div class="stat-value stat-yellow">12</div>
+          <div class="stat-sub">3 HIGH PRIORITY this morning</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Open Commitments</div>
+          <div class="stat-value stat-blue">4</div>
+          <div class="stat-sub">2 past 30-day follow-up window</div>
+        </div>
+      </div>
+
+      <!-- FAB FIVE -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">⚡ Today's Fab Five — Priority Contacts</div>
+          <div class="section-link">Customize ranking logic →</div>
+        </div>
+        <div class="fab-five-grid">
+          <div class="fab-card fab-rank-1" onclick="showClient()">
+            <div class="fab-rank"># 1 Priority</div>
+            <div class="fab-name">Meridian Manufacturing Group</div>
+            <span class="fab-tier tier-1">TIER 1</span>
+            <div class="fab-score-row">
+              <div class="fab-score-label">Urgency Score</div>
+              <div class="fab-score">94</div>
+            </div>
+            <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:94%"></div></div>
+            <div class="fab-reason"><strong>Credit facility renewal in 38 days.</strong> NEGATIVE market signal: supply chain disruption in industrials sector. Open commitment from last call not followed up (22 days).</div>
+            <div class="fab-action"><button class="fab-btn" onclick="showClient(); event.stopPropagation()">Open Client + Generate Brief →</button></div>
+          </div>
+          <div class="fab-card" onclick="showView('dashboard')">
+            <div class="fab-rank"># 2 Priority</div>
+            <div class="fab-name">Hartwell Capital Partners</div>
+            <span class="fab-tier tier-1">TIER 1</span>
+            <div class="fab-score-row">
+              <div class="fab-score-label">Urgency Score</div>
+              <div class="fab-score">81</div>
+            </div>
+            <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:81%"></div></div>
+            <div class="fab-reason">KYC renewal <strong>DUE SOON</strong>. Treasury management contract up for review Q3. No contact in 31 days.</div>
+            <div class="fab-action"><button class="fab-btn">Open Client →</button></div>
+          </div>
+          <div class="fab-card" onclick="showView('dashboard')">
+            <div class="fab-rank"># 3 Priority</div>
+            <div class="fab-name">Apex Industrial Holdings</div>
+            <span class="fab-tier tier-1">TIER 1</span>
+            <div class="fab-score-row">
+              <div class="fab-score-label">Urgency Score</div>
+              <div class="fab-score">76</div>
+            </div>
+            <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:76%"></div></div>
+            <div class="fab-reason">CEO change announced this week — <strong>leadership signal</strong>. FX forward contract up for renewal. Cross-sell opportunity: Payments.</div>
+            <div class="fab-action"><button class="fab-btn">Open Client →</button></div>
+          </div>
+          <div class="fab-card" onclick="showView('dashboard')">
+            <div class="fab-rank"># 4 Priority</div>
+            <div class="fab-name">Vantage Logistics LLC</div>
+            <span class="fab-tier tier-2">TIER 2</span>
+            <div class="fab-score-row">
+              <div class="fab-score-label">Urgency Score</div>
+              <div class="fab-score">68</div>
+            </div>
+            <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:68%; background: var(--yellow);"></div></div>
+            <div class="fab-reason">62 days since last contact — <strong>re-engagement flag</strong>. New procurement VP joined 3 weeks ago. Deposits cross-sell rated 7.8 confidence.</div>
+            <div class="fab-action"><button class="fab-btn">Open Client →</button></div>
+          </div>
+          <div class="fab-card" onclick="showView('dashboard')">
+            <div class="fab-rank"># 5 Priority</div>
+            <div class="fab-name">Cornerstone Building Products</div>
+            <span class="fab-tier tier-2">TIER 2</span>
+            <div class="fab-score-row">
+              <div class="fab-score-label">Urgency Score</div>
+              <div class="fab-score">61</div>
+            </div>
+            <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:61%; background: var(--yellow);"></div></div>
+            <div class="fab-reason">Advisory product pitch — confidence 7.1. Earnings release tomorrow; monitor for M&A signals. Relationship health: stable.</div>
+            <div class="fab-action"><button class="fab-btn">Open Client →</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CLIENT TABLE -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">All Clients</div>
+        </div>
+        <div class="data-table">
+          <div class="table-search"><input type="text" placeholder="Search by client name, industry, or tier..."></div>
+          <table>
+            <thead><tr>
+              <th>Client Name</th><th>Tier</th><th>Industry</th><th>Renewal Date</th><th>KYC Status</th><th>Last Contact</th><th>Urgency</th>
+            </tr></thead>
+            <tbody>
+              <tr onclick="showClient()">
+                <td class="td-name">Meridian Manufacturing Group</td>
+                <td><span class="fab-tier tier-1" style="margin:0">TIER 1</span></td>
+                <td style="color:var(--muted)">Industrial Mfg</td><td>Jul 14, 2026</td>
+                <td><span class="kyc-badge kyc-current">CURRENT</span></td>
+                <td>22 days ago</td>
+                <td><span class="urgency-dot urgency-high"></span>High</td>
+              </tr>
+              <tr>
+                <td class="td-name">Hartwell Capital Partners</td>
+                <td><span class="fab-tier tier-1" style="margin:0">TIER 1</span></td>
+                <td style="color:var(--muted)">Financial Services</td><td>Jun 30, 2026</td>
+                <td><span class="kyc-badge kyc-due-soon">DUE SOON</span></td>
+                <td>31 days ago</td>
+                <td><span class="urgency-dot urgency-high"></span>High</td>
+              </tr>
+              <tr>
+                <td class="td-name">Apex Industrial Holdings</td>
+                <td><span class="fab-tier tier-1" style="margin:0">TIER 1</span></td>
+                <td style="color:var(--muted)">Industrial</td><td>Aug 2, 2026</td>
+                <td><span class="kyc-badge kyc-current">CURRENT</span></td>
+                <td>14 days ago</td>
+                <td><span class="urgency-dot urgency-high"></span>High</td>
+              </tr>
+              <tr>
+                <td class="td-name">Vantage Logistics LLC</td>
+                <td><span class="fab-tier tier-2" style="margin:0">TIER 2</span></td>
+                <td style="color:var(--muted)">Transportation</td><td>Sep 15, 2026</td>
+                <td><span class="kyc-badge kyc-current">CURRENT</span></td>
+                <td>62 days ago</td>
+                <td><span class="urgency-dot urgency-med"></span>Medium</td>
+              </tr>
+              <tr>
+                <td class="td-name">Cornerstone Building Products</td>
+                <td><span class="fab-tier tier-2" style="margin:0">TIER 2</span></td>
+                <td style="color:var(--muted)">Construction</td><td>Oct 1, 2026</td>
+                <td><span class="kyc-badge kyc-current">CURRENT</span></td>
+                <td>8 days ago</td>
+                <td><span class="urgency-dot urgency-med"></span>Medium</td>
+              </tr>
+              <tr>
+                <td class="td-name">Greenlake Energy Services</td>
+                <td><span class="fab-tier tier-2" style="margin:0">TIER 2</span></td>
+                <td style="color:var(--muted)">Energy</td><td>Nov 30, 2026</td>
+                <td><span class="kyc-badge kyc-overdue">OVERDUE</span></td>
+                <td>45 days ago</td>
+                <td><span class="urgency-dot urgency-med"></span>Medium</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENT DETAIL VIEW -->
+  <div class="view" id="view-client">
+    <div class="client-header">
+      <div class="client-breadcrumb" onclick="showView('dashboard')">← <span>Daily Brief</span> / Meridian Manufacturing Group</div>
+      <div class="client-top">
+        <div>
+          <div class="client-name">Meridian Manufacturing Group</div>
+          <div class="client-meta">Industrial Manufacturing &nbsp;·&nbsp; <strong>TIER 1</strong> &nbsp;·&nbsp; $250M–$500M Revenue Band &nbsp;·&nbsp; Jennifer Mason (RM)</div>
+        </div>
+        <div class="client-actions">
+          <button class="topbar-btn btn-secondary" onclick="toggleAgent()">✦ Ask Prep Agent</button>
+          <button class="topbar-btn btn-primary" onclick="showModal()">⬡ Generate Meeting Brief</button>
+        </div>
+      </div>
+      <div class="client-stats">
+        <div class="client-stat-card">
+          <div class="client-stat-label">Renewal Date</div>
+          <div class="client-stat-value" style="color:var(--orange)">Jul 14, 2026</div>
+          <div class="client-stat-sub">38 days — renewal window open</div>
+        </div>
+        <div class="client-stat-card">
+          <div class="client-stat-label">Account Health</div>
+          <div class="health-grid" style="margin-top:6px">
+            <div class="health-item"><div class="health-dot health-dot-green"></div><div><div class="health-label" style="font-size:11px">KYC Status</div><div class="health-sub">CURRENT</div></div></div>
+            <div class="health-item"><div class="health-dot health-dot-yellow"></div><div><div class="health-label" style="font-size:11px">Open Commitment</div><div class="health-sub">Past due — 22d</div></div></div>
+            <div class="health-item"><div class="health-dot health-dot-red"></div><div><div class="health-label" style="font-size:11px">Market Signal</div><div class="health-sub">NEGATIVE — Supply chain</div></div></div>
+            <div class="health-item"><div class="health-dot health-dot-green"></div><div><div class="health-label" style="font-size:11px">NBA Score</div><div class="health-sub">8.1 — Renewal pitch</div></div></div>
+          </div>
+        </div>
+        <div class="client-stat-card">
+          <div class="client-stat-label">Portfolio ARR (PNC Revenue)</div>
+          <div class="client-stat-value" style="color:var(--green)">$2.4M</div>
+          <div class="client-stat-sub">Treasury + FX + Credit Facility</div>
+        </div>
+      </div>
+      <div class="tabs">
+        <div class="tab active" onclick="showTab('overview')">Overview</div>
+        <div class="tab" onclick="showTab('activity')">Activity</div>
+        <div class="tab" onclick="showTab('signals')">Market Signals <span style="background:var(--red);color:white;font-size:9px;padding:1px 5px;border-radius:8px;margin-left:4px;font-weight:700">1</span></div>
+        <div class="tab" onclick="showTab('opportunities')">Opportunities</div>
+        <div class="tab" onclick="showTab('brief')">Meeting Brief</div>
+      </div>
+    </div>
+
+    <!-- OVERVIEW TAB -->
+    <div class="tab-content active" id="tab-overview">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div>
+          <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:12px">Product Holdings</div>
+          <div class="data-table">
+            <table>
+              <thead><tr><th>Product</th><th>Status</th><th>Renewal</th><th>Annual Rev</th></tr></thead>
+              <tbody>
+                <tr><td>Revolving Credit Facility</td><td><span class="kyc-badge" style="background:rgba(232,121,40,0.15);color:var(--orange)">PENDING RENEWAL</span></td><td style="color:var(--orange)">Jul 14</td><td>$1.1M</td></tr>
+                <tr><td>Controlled Disbursement</td><td><span class="kyc-badge kyc-current">ACTIVE</span></td><td>—</td><td>$680K</td></tr>
+                <tr><td>FX Forwards (12-mo)</td><td><span class="kyc-badge kyc-current">ACTIVE</span></td><td>Sep 30</td><td>$420K</td></tr>
+                <tr><td>Capital Markets Advisory</td><td><span class="kyc-badge" style="background:rgba(122,154,191,0.15);color:var(--muted)">UNDER REVIEW</span></td><td>—</td><td>$190K</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:8px">Wallet share: 4/7 product categories active · Deposits + Payments = white space</div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:12px">Client Profile</div>
+          <div class="signal-card" style="margin:0">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px">
+              <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase;font-weight:700;margin-bottom:3px">Industry</div>Industrial Manufacturing</div>
+              <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase;font-weight:700;margin-bottom:3px">Revenue Band</div>$250M – $500M</div>
+              <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase;font-weight:700;margin-bottom:3px">Primary Contact</div>Robert Kaufman, CFO</div>
+              <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase;font-weight:700;margin-bottom:3px">Relationship Since</div>March 2019</div>
+              <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase;font-weight:700;margin-bottom:3px">KYC Status</div><span style="color:var(--green)">CURRENT</span></div>
+              <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase;font-weight:700;margin-bottom:3px">Open Service Issues</div>1</div>
+              <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase;font-weight:700;margin-bottom:3px">NAICS Code</div>332 — Fabricated Metal</div>
+              <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase;font-weight:700;margin-bottom:3px">Last Contact</div><span style="color:var(--yellow)">22 days ago</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIVITY TAB -->
+    <div class="tab-content" id="tab-activity">
+      <div style="max-width:680px">
+        <div class="commitment-alert" style="margin-bottom:20px">⚠ Open commitment from May 20 call not followed up — 22 days past due. Robert Kaufman is expecting the revised treasury proposal.</div>
+        <div class="activity-item">
+          <div class="activity-icon activity-icon-meeting">📋</div>
+          <div class="activity-body">
+            <div class="activity-title">In-Person Meeting — Quarterly Review</div>
+            <div class="activity-meta">May 20, 2026 · Jennifer Mason · IN_PERSON_MEETING</div>
+            <div class="activity-summary">Reviewed Q1 credit utilization. Kaufman flagged supply chain pressures impacting raw material procurement costs. Discussed renewal terms for revolving facility. Jennifer committed to sending revised treasury proposal by May 27.</div>
+            <div class="commitment-alert">📌 FOLLOW-UP COMMITTED: Revised treasury proposal — sent? No record of follow-up.</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon activity-icon-call">📞</div>
+          <div class="activity-body">
+            <div class="activity-title">Phone Call — Renewal Discussion</div>
+            <div class="activity-meta">Apr 28, 2026 · Jennifer Mason · PHONE_CALL</div>
+            <div class="activity-summary">Brief call to flag upcoming July renewal window. Kaufman requested to see benchmarked pricing before formal renewal conversation. Positive tone overall — relationship stable.</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon activity-icon-call">📧</div>
+          <div class="activity-body">
+            <div class="activity-title">Proposal Submitted — FX Forwards Renewal</div>
+            <div class="activity-meta">Mar 12, 2026 · Jennifer Mason · PROPOSAL_SUBMITTED</div>
+            <div class="activity-summary">Submitted 12-month FX forward renewal proposal. Accepted without negotiation — Kaufman cited familiarity with terms and relationship confidence. Completed Apr 2.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIGNALS TAB -->
+    <div class="tab-content" id="tab-signals">
+      <div style="max-width:680px">
+        <div class="signal-card">
+          <div class="signal-header">
+            <div class="signal-headline">Industrials Supply Chain Disruption — Tier 1 Supplier Constraint Emerging in Fabricated Metals</div>
+            <span class="signal-badge signal-negative">NEGATIVE</span>
+          </div>
+          <div class="signal-meta">Jun 9, 2026 · Reuters · Industrial Manufacturing · Relevance Score: 9.2 / 10</div>
+          <div class="signal-detail">Procurement costs in the fabricated metals sector are rising 8–12% on key commodities due to tariff impacts and reduced domestic supplier capacity. Companies with significant procurement exposure and floating-rate credit facilities may face margin compression in H2 2026.</div>
+          <div class="signal-action-box">
+            <div class="signal-action-label">RM Opportunity</div>
+            <div class="signal-action-text">Reference in renewal conversation: Kaufman flagged supply chain pressure on May 20. This signal validates his concern — opening to discuss treasury management services, FX hedging expansion, or structured credit flexibility as risk mitigants.</div>
+          </div>
+        </div>
+        <div class="signal-card">
+          <div class="signal-header">
+            <div class="signal-headline">Federal Reserve Signals Gradual Rate Reduction Path Through Q4 2026</div>
+            <span class="signal-badge signal-watch">WATCH</span>
+          </div>
+          <div class="signal-meta">Jun 7, 2026 · Federal Reserve · Macro · Relevance Score: 6.8 / 10</div>
+          <div class="signal-detail">Fed guidance suggests 1–2 rate cuts by year-end, dependent on inflation trajectory. Companies with floating-rate credit facilities may seek to lock in fixed-rate structures before cuts fully materialize.</div>
+          <div class="signal-action-box">
+            <div class="signal-action-label">RM Opportunity</div>
+            <div class="signal-action-text">Bring up in renewal discussion — explore whether Meridian wants to discuss fixed vs. floating rate structure on the revolving facility renewal. Capital Markets team can support.</div>
+          </div>
+        </div>
+        <div class="signal-card">
+          <div class="signal-header">
+            <div class="signal-headline">Meridian Manufacturing Expands Ohio Facility — $45M Capital Investment Announced</div>
+            <span class="signal-badge signal-positive">POSITIVE</span>
+          </div>
+          <div class="signal-meta">May 28, 2026 · Business Wire · Client-Specific · Relevance Score: 8.4 / 10</div>
+          <div class="signal-detail">Meridian announced a $45M expansion of its Ohio manufacturing campus, expected to begin construction Q3 2026. The company cited strong order backlog and increasing domestic sourcing demand as drivers.</div>
+          <div class="signal-action-box">
+            <div class="signal-action-label">RM Opportunity</div>
+            <div class="signal-action-text">Expansion signals credit appetite increase — explore whether current revolving facility limit meets new capex needs. Construction period cash management = treasury management opportunity. Project finance advisory play if eligible.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPPORTUNITIES TAB -->
+    <div class="tab-content" id="tab-opportunities">
+      <div style="max-width:680px">
+        <div class="nba-card">
+          <div class="nba-header">
+            <div class="nba-type nba-type-renewal">RENEWAL INITIATION — Priority #1</div>
+            <div class="nba-confidence"><span class="confidence-label">Confidence</span><span class="confidence-score confidence-high">8.1</span><span class="confidence-label">/ 10</span></div>
+          </div>
+          <div class="nba-title">Initiate Revolving Credit Facility Renewal — Jul 14 Deadline</div>
+          <div class="nba-desc">The revolving credit facility comes up for renewal in 38 days. Given the supply chain signal and the Ohio expansion announcement, there is a strong case for discussing facility limit expansion (+15–20%) and exploring fixed/floating rate structuring. Kaufman's May 20 comments about procurement pressure align with this recommendation — cite the supply chain signal as the market context.</div>
+          <div class="nba-signal-ref">↗ Triggered by: Industrials Supply Chain Signal (Jun 9) + Ohio expansion announcement (May 28)</div>
+          <div style="margin-top:8px"><span class="nba-expiry">Expires: Jul 14, 2026</span></div>
+        </div>
+        <div class="nba-card">
+          <div class="nba-header">
+            <div class="nba-type nba-type-pitch">CROSS-SELL PITCH — Priority #2</div>
+            <div class="nba-confidence"><span class="confidence-label">Confidence</span><span class="confidence-score confidence-med">7.3</span><span class="confidence-label">/ 10</span></div>
+          </div>
+          <div class="nba-title">Introduce PNC Treasury Management — Cash Positioning for Capital Build</div>
+          <div class="nba-desc">Ohio facility expansion creates a 12–18 month capital deployment period with significant cash positioning needs. Peer companies in Meridian's revenue band and industry typically hold 2–3 treasury management products. Meridian currently holds Controlled Disbursement only. Expand to include ZBA structure, integrated payables, or working capital optimization.</div>
+          <div class="nba-signal-ref">↗ Triggered by: Ohio expansion (May 28) + wallet share gap analysis</div>
+        </div>
+        <div class="nba-card">
+          <div class="nba-header">
+            <div class="nba-type nba-type-pitch">CROSS-SELL PITCH — Priority #3</div>
+            <div class="nba-confidence"><span class="confidence-label">Confidence</span><span class="confidence-score confidence-med">6.9</span><span class="confidence-label">/ 10</span></div>
+          </div>
+          <div class="nba-title">FX Hedging Expansion — Commodity Price Exposure</div>
+          <div class="nba-desc">Supply chain pressures and rising commodity costs increase Meridian's foreign currency exposure on raw material imports. Current FX forward program covers export revenues but does not address procurement-side hedging. Introduce additional FX risk management structures — commodity-linked hedging or additional forward book expansion.</div>
+          <div class="nba-signal-ref">↗ Triggered by: Supply chain signal (Jun 9) + May 20 call notes on procurement pressure</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRIEF TAB -->
+    <div class="tab-content" id="tab-brief">
+      <div class="brief-container">
+        <div class="brief-top">
+          <div>
+            <div class="brief-title-row">
+              <div class="brief-title">Meeting Excellence Guide</div>
+            </div>
+            <div class="brief-sub">Meridian Manufacturing Group · Credit Facility Renewal · Generated Jun 11, 2026 5:48 AM</div>
+          </div>
+          <div class="brief-export-btns">
+            <button class="topbar-btn btn-secondary">📱 Mobile View</button>
+            <button class="topbar-btn btn-primary">⬇ Export PDF</button>
+          </div>
+        </div>
+
+        <!-- Section 1: Snapshot -->
+        <div class="section-card">
+          <div class="section-card-header"><div class="section-card-num">1</div><div class="section-card-title">Meeting Snapshot</div></div>
+          <div class="section-card-body">
+            <table class="snapshot-table">
+              <tr><td>Client</td><td>Meridian Manufacturing Group</td><td>RM</td><td>Jennifer Mason</td></tr>
+              <tr><td>Meeting Type</td><td>Credit Facility Renewal Discussion</td><td>Renewal</td><td><strong style="color:var(--orange)">Jul 14, 2026 — 38 DAYS</strong></td></tr>
+              <tr><td>Primary Contact</td><td>Robert Kaufman, CFO</td><td>Relationship</td><td>Since March 2019 · 5 years</td></tr>
+              <tr><td>Annual Revenue (PNC)</td><td>$2.4M across 4 products</td><td>Urgency</td><td><strong style="color:var(--orange)">HIGH — Renewal + Open Signal</strong></td></tr>
+            </table>
+            <div class="timing-alert">⚠ <span><strong>OPEN COMMITMENT ALERT:</strong> The treasury proposal committed on May 20 was never sent. Address this before discussing renewal terms — Robert will notice.</span></div>
+          </div>
+        </div>
+
+        <!-- Section 2: Win Conditions -->
+        <div class="section-card">
+          <div class="section-card-header"><div class="section-card-num">2</div><div class="section-card-title">Win Conditions</div></div>
+          <div class="section-card-body">
+            <div class="win-grid">
+              <div class="win-box">
+                <div class="win-box-label">PNC Win</div>
+                <div class="win-item"><div class="win-item-label">Primary</div><div class="win-item-text">Revolving facility renewed with expanded limit ($X → $X+15–20%) at improved terms. Next meeting booked before end of call.</div></div>
+                <div class="win-item"><div class="win-item-label">Secondary</div><div class="win-item-text">Treasury management intro initiated — get Robert to agree to a working capital conversation in July.</div></div>
+              </div>
+              <div class="win-box">
+                <div class="win-box-label">Client Win</div>
+                <div class="win-item"><div class="win-item-label">Primary</div><div class="win-item-text">Robert walks away confident that PNC understands the supply chain context and Ohio expansion — and that the credit facility will support both.</div></div>
+                <div class="win-item"><div class="win-item-label">Secondary</div><div class="win-item-text">The overdue treasury proposal is resolved — Robert gets the analysis he was waiting for.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Know the Room -->
+        <div class="section-card">
+          <div class="section-card-header"><div class="section-card-num">3</div><div class="section-card-title">Know the Room</div></div>
+          <div class="section-card-body">
+            <div class="room-card">
+              <div class="room-name">Robert Kaufman</div>
+              <div class="room-role">Chief Financial Officer · Primary Contact · Decision Maker</div>
+              <div class="room-row"><div class="room-row-label">Cares About</div><div class="room-row-text">Certainty on credit terms before the renewal window closes. Cost management amid supply chain pressure. Board visibility into banking relationships.</div></div>
+              <div class="room-row"><div class="room-row-label">Relationship</div><div class="room-row-text">5-year relationship. Accepted FX renewal without negotiation in March — high confidence signal. Last call: May 20 — positive tone, one open item (treasury proposal).</div></div>
+              <div class="watch-for">⚠ Will open with the overdue treasury proposal. Acknowledge it immediately — don't wait for him to bring it up.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: Meeting Guide -->
+        <div class="section-card">
+          <div class="section-card-header"><div class="section-card-num">4</div><div class="section-card-title">Live Meeting Guide</div></div>
+          <div class="section-card-body">
+            <div class="verbatim-box">"Robert — before we get into renewal terms, I owe you the treasury proposal from our May 20 call. I have it here and I want to walk you through it today. Everything we cover on the facility will make more sense with that context in the room."</div>
+            <div class="phase-block">
+              <div class="phase-header"><div class="phase-num">1</div>OPEN — Address the Commitment (5 min)</div>
+              <div class="phase-item">Deliver the treasury proposal you committed on May 20 — do this in the first 3 minutes before any other topic.</div>
+              <div class="phase-item">Purpose statement: "Today we're here to make sure the revolving facility renewal is structured around what Meridian needs for the next phase — including the Ohio build-out."</div>
+              <div class="phase-item">Time contract: "We have 45 minutes. My goal: by the time we end, terms are directionally agreed and you have what you need to brief the board."</div>
+            </div>
+            <div class="phase-block">
+              <div class="phase-header"><div class="phase-num">2</div>DISCOVER — Let Robert Talk (10 min)</div>
+              <div class="phase-item">"Since our May call — what changed on the supply chain side? Are procurement costs still the biggest variable heading into H2?"</div>
+              <div class="phase-item">"The Ohio expansion announcement was significant — how is that factoring into your credit planning for the rest of the year?"</div>
+              <div class="phase-item">"What does the board want to see on the facility structure before they sign off on renewal terms?"</div>
+              <div class="callout-box"><div class="callout-label">Intelligence to Bring</div><div class="callout-text">Reference the Reuters supply chain signal from June 9 — procurement cost rises of 8–12% in fabricated metals. "The pressures you flagged on May 20 are now showing up in sector data." This validates Robert's concern and signals you're tracking his business, not just his account.</div></div>
+            </div>
+            <div class="phase-block">
+              <div class="phase-header"><div class="phase-num">3</div>DELIVER — Renewal Proposal (20 min)</div>
+              <div class="phase-item">Lead with the Ohio expansion: "The $45M build signals strong confidence in the business — we want the credit structure to match that trajectory, not constrain it."</div>
+              <div class="phase-item">Present expanded limit scenario (+15–20%) with fixed/floating rate optionality given Fed rate trajectory.</div>
+              <div class="phase-item">Tie supply chain context to FX hedging expansion — "If procurement costs are rising on imported inputs, your current FX forward book doesn't cover that exposure."</div>
+              <div class="phase-item">Treasury management: position as the integrated cash management for the Ohio build period — not a separate pitch, but part of the renewal package.</div>
+            </div>
+            <div class="phase-block">
+              <div class="phase-header"><div class="phase-num">4</div>CLOSE — Confirm and Book (10 min)</div>
+              <div class="verbatim-box">"Based on what we covered today — what would you need to see from us to move forward on the facility terms before July 14? And can we get a follow-up on the calendar for two weeks out to confirm final terms?"</div>
+              <div class="phase-item">Do not leave without a specific date for the next conversation.</div>
+              <div class="phase-item">Internal: Flag Capital Markets team if Robert shows interest in rate structuring conversation.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5: Objections -->
+        <div class="section-card">
+          <div class="section-card-header"><div class="section-card-num">5</div><div class="section-card-title">Top 3 Objections</div></div>
+          <div class="section-card-body">
+            <div class="objection-item">
+              <div class="objection-q">"Why didn't I get the treasury proposal two weeks ago?"</div>
+              <div class="objection-why">It was committed on May 20 and not delivered. Robert will notice. Get ahead of it.</div>
+              <div class="objection-response">"You're right — I committed to that by May 27 and I didn't deliver on time. I have it here today and I want to make sure we walk through it properly rather than just emailing it. That's on me and I appreciate your patience."</div>
+            </div>
+            <div class="objection-item">
+              <div class="objection-q">"We're seeing pressure on margins — this isn't the time to add complexity to the facility structure."</div>
+              <div class="objection-why">Supply chain pressure is real. Robert may be cautious about expanding or restructuring right now.</div>
+              <div class="objection-response">"That's exactly why we think the structure matters. An expanded limit with flexible draw capability gives you optionality when costs spike — you're not forced to fund procurement from operating cash. The Ohio build adds to that case."</div>
+            </div>
+            <div class="objection-item">
+              <div class="objection-q">"We're also talking to another bank about the renewal."</div>
+              <div class="objection-why">Ohio expansion signals Meridian may be testing competitive options before renewal.</div>
+              <div class="objection-response">"I'd expect you to. A $45M expansion is a meaningful decision and getting the right banking structure matters. What I can offer is five years of Meridian-specific knowledge and a relationship that didn't require you to explain your business from scratch. Tell me what the other conversation is offering and let's make sure we're comparing fairly."</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 6: Post-Call -->
+        <div class="section-card">
+          <div class="section-card-header"><div class="section-card-num">6</div><div class="section-card-title">Post-Call Follow-Through</div></div>
+          <div class="section-card-body">
+            <table class="followup-table">
+              <thead><tr><th>Action</th><th>Owner</th><th>Due</th></tr></thead>
+              <tbody>
+                <tr><td>Log interaction in CRM — renewal direction, Robert's H2 concerns, board timeline</td><td>Jennifer Mason</td><td>Same day</td></tr>
+                <tr><td>Send renewal term sheet draft with expanded limit scenarios</td><td>Jennifer Mason + Credit</td><td>Within 48 hrs</td></tr>
+                <tr><td>Book follow-up call to confirm final terms</td><td>Jennifer Mason</td><td>Before end of call</td></tr>
+                <tr><td>Flag Capital Markets if rate structuring interest expressed</td><td>Jennifer Mason → Cap Mkts</td><td>Same day</td></tr>
+                <tr><td>Treasury management follow-up proposal — working capital for Ohio build</td><td>Jennifer Mason + Treasury</td><td>Within 1 week</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Meeting Self-Score -->
+        <div class="section-card">
+          <div class="section-card-header"><div class="section-card-num">7</div><div class="section-card-title">Meeting Self-Score — Complete Within 30 Min</div></div>
+          <div class="section-card-body">
+            <div class="score-row header"><div>Dimension</div><div>What a 5 Looks Like</div><div>Score</div></div>
+            <div class="score-row"><div>Win Conditions Met</div><div style="font-size:11px;color:var(--muted)">Renewal direction confirmed, next meeting booked, treasury intro made</div><div><input class="score-input" type="text" placeholder="__ / 5"></div></div>
+            <div class="score-row"><div>Intelligence Used<div class="score-what">Did you reference the supply chain signal and Ohio expansion naturally?</div></div><div style="font-size:11px;color:var(--muted)">Robert felt you tracked his business, not just his account</div><div><input class="score-input" type="text" placeholder="__ / 5"></div></div>
+            <div class="score-row"><div>Open Commitment Resolved<div class="score-what">Did you open with the treasury proposal?</div></div><div style="font-size:11px;color:var(--muted)">You addressed it before he did — no awkward pause</div><div><input class="score-input" type="text" placeholder="__ / 5"></div></div>
+            <div class="score-row"><div>Discovery Quality<div class="score-what">Did Robert talk 60–70% in the first 10 min?</div></div><div style="font-size:11px;color:var(--muted)">You learned something new about H2 plans or board requirements</div><div><input class="score-input" type="text" placeholder="__ / 5"></div></div>
+            <div class="score-row"><div>Committed Next Step</div><div style="font-size:11px;color:var(--muted)">Specific date, owner, and purpose confirmed before call ended</div><div><input class="score-input" type="text" placeholder="__ / 5"></div></div>
+            <div class="score-row" style="background:rgba(255,255,255,0.02)"><div><strong>Total Score</strong><div class="score-what">23–25: Excellent · 18–22: Good · Below 18: Review with manager</div></div><div></div><div><input class="score-input" type="text" placeholder="__ / 25"></div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /view-client -->
+
+</div><!-- /main -->
+
+<!-- TOKEN MODAL -->
+<div class="modal-overlay" id="token-modal" onclick="if(event.target===this)this.classList.remove('visible')">
+  <div class="modal" style="width:460px">
+    <div class="modal-title">Connect to RM Prep Agent</div>
+    <div class="modal-sub">Enter your Alation <strong>Refresh Token</strong> to activate the live agent. Valid for 60 days — the app handles API token renewal automatically.</div>
+    <div class="modal-step">
+      <div class="modal-step-label">Refresh Token (60-day)</div>
+      <input id="token-input" type="password" class="pw-input" placeholder="Paste your Refresh Token here" onkeydown="if(event.key==='Enter')saveToken()" style="font-family:monospace;font-size:12px">
+      <div style="font-size:11px;color:var(--muted);margin-top:6px">Found at: Alation → Account → Authentication → your active Refresh Token → copy the token value</div>
+    </div>
+    <div class="modal-actions">
+      <button class="topbar-btn btn-secondary" onclick="document.getElementById('token-modal').classList.remove('visible')">Cancel</button>
+      <button class="topbar-btn btn-primary" onclick="saveToken()">Connect Agent →</button>
+    </div>
+  </div>
+</div>
+
+<!-- GENERATE MODAL -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)hideModal()">
+  <div class="modal" id="modal-content">
+    <div class="modal-title">Generate Meeting Brief</div>
+    <div class="modal-sub">Meridian Manufacturing Group · Jun 11, 2026</div>
+    <div id="modal-step1">
+      <div class="modal-step">
+        <div class="modal-step-label">Meeting Type</div>
+        <div class="option-grid">
+          <div class="option-btn selected" onclick="selectOption(this)"><div class="option-icon">🔄</div><div><strong>Renewal Discussion</strong></div><div class="option-text">Credit facility renewal conversation</div></div>
+          <div class="option-btn" onclick="selectOption(this)"><div class="option-icon">📈</div><div><strong>Product Pitch</strong></div><div class="option-text">New product or cross-sell</div></div>
+          <div class="option-btn" onclick="selectOption(this)"><div class="option-icon">🤝</div><div><strong>Relationship Review</strong></div><div class="option-text">Quarterly relationship health</div></div>
+          <div class="option-btn" onclick="selectOption(this)"><div class="option-icon">↩</div><div><strong>Re-Engagement</strong></div><div class="option-text">Lapsed contact reactivation</div></div>
+        </div>
+      </div>
+      <div class="modal-step">
+        <div class="modal-step-label">Output Format</div>
+        <div class="option-grid">
+          <div class="option-btn selected" onclick="selectOption(this)"><div class="option-icon">📄</div><div><strong>Full Brief</strong></div><div class="option-text">7 sections, printable PDF</div></div>
+          <div class="option-btn" onclick="selectOption(this)"><div class="option-icon">📱</div><div><strong>Mobile Brief</strong></div><div class="option-text">3 key points, quick scan</div></div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="topbar-btn btn-secondary" onclick="hideModal()">Cancel</button>
+        <button class="topbar-btn btn-primary" onclick="generateBrief()">✦ Generate Brief →</button>
+      </div>
+    </div>
+    <div id="modal-generating" style="display:none; text-align:center; padding:20px 0">
+      <div style="font-size:14px;font-weight:600;margin-bottom:16px">Assembling your brief...</div>
+      <div class="progress-bar"><div class="progress-fill"></div></div>
+      <div style="font-size:12px;color:var(--muted);line-height:2">
+        ✓ Pulling client profile + product holdings<br>
+        ✓ Checking open commitments + interaction history<br>
+        ✓ Reading market signals (2 relevant found)<br>
+        ✓ Loading next-best-action recommendations<br>
+        ↻ Generating meeting guide + objection responses...
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AGENT CHAT PANEL -->
+<div class="agent-panel" id="agent-panel">
+  <div class="agent-header">
+    <div class="agent-title"><div class="agent-status"></div> RM Prep Agent</div>
+    <div class="agent-close" onclick="toggleAgent()">✕</div>
+  </div>
+  <div class="agent-bound">Grounded on: <span>RM Meeting Prep — C&IB Daily Intelligence Brief</span> + <span style="color:var(--green)">Public Web</span></div>
+  <div class="agent-messages" id="agent-messages">
+    <div class="msg msg-agent">
+      <div class="msg-label">RM PREP AGENT</div>
+      <div class="msg-bubble">Good morning, Jennifer. You have 5 Fab Five clients today — Meridian Manufacturing Group is ranked #1 with an urgency score of 94.<br><br>There's a NEGATIVE market signal on their sector this morning (supply chain disruption, Industrials) and the revolving credit facility renewal is 38 days out. You also have an open commitment from your May 20 call that hasn't been followed up.<br><br>Ask me anything about Meridian, or pull a brief for any client on your list.</div>
+      <div class="msg-sources"><span class="source-chip">RM_CLIENT_PROFILES</span><span class="source-chip">RM_MARKET_SIGNALS</span><span class="source-chip">RM_FAB_FIVE_DAILY</span></div>
+    </div>
+  </div>
+  <div class="agent-input-area">
+    <div class="agent-suggestions" id="agent-suggestions">
+      <div class="agent-sug" onclick="sendSuggestion(this)">Tell me everything about Meridian before my 10am call</div>
+      <div class="agent-sug" onclick="sendSuggestion(this)">Are there any data quality issues I should know before relying on these briefs?</div>
+      <div class="agent-sug" onclick="sendSuggestion(this)">Which clients have renewals in the next 60 days and what should I be pitching?</div>
+    </div>
+    <div class="agent-input-row">
+      <input class="agent-input" id="agent-input" type="text" placeholder="Ask about any client or your book..." onkeydown="if(event.key==='Enter')sendMessage()">
+      <button class="agent-send" onclick="sendMessage()">↑</button>
+    </div>
+  </div>
+</div>
+
+<button class="agent-toggle" onclick="toggleAgent()" id="agent-toggle">✦</button>
+
+<script>
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+}
+
+function showClient() {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-client').classList.add('active');
+  showTab('overview');
+}
+
+function showTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  const tabs = document.querySelectorAll('.tab');
+  const tabNames = ['overview','activity','signals','opportunities','brief'];
+  const idx = tabNames.indexOf(id);
+  if(tabs[idx]) tabs[idx].classList.add('active');
+  const tc = document.getElementById('tab-' + id);
+  if(tc) tc.classList.add('active');
+}
+
+function showModal() {
+  document.getElementById('modal').classList.add('visible');
+  document.getElementById('modal-step1').style.display = 'block';
+  document.getElementById('modal-generating').style.display = 'none';
+}
+
+function hideModal() {
+  document.getElementById('modal').classList.remove('visible');
+}
+
+function selectOption(el) {
+  const grid = el.parentElement;
+  grid.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function generateBrief() {
+  document.getElementById('modal-step1').style.display = 'none';
+  document.getElementById('modal-generating').style.display = 'block';
+  setTimeout(() => {
+    hideModal();
+    showTab('brief');
+  }, 2800);
+}
+
+let agentOpen = false;
+function toggleAgent() {
+  agentOpen = !agentOpen;
+  document.getElementById('agent-panel').classList.toggle('open', agentOpen);
+  document.getElementById('agent-toggle').classList.toggle('hidden', agentOpen);
+}
+
+// ── AGENT CONFIG ─────────────────────────────────────────────────────────────
+const AGENT_ENDPOINT = 'https://north-central-ds.mtse.alationcloud.com/ai/api/v1/chats/agent/4eea22b1-3e61-4cda-8489-fe374344a028/stream';
+const ALATION_BASE   = 'https://north-central-ds.mtse.alationcloud.com';
+const ALATION_USER   = 'troy.smith@alation.com';
+// Refresh token (60-day) → auto-generates 24-hour API Access Tokens
+function getRefreshToken() { return localStorage.getItem('rm_refresh_token') || ''; }
+function getCachedToken()  { return sessionStorage.getItem('rm_api_token') || ''; }
+function cacheToken(t)     { sessionStorage.setItem('rm_api_token', t); }
+
+async function getToken() {
+  // Return cached access token if still valid this session
+  const cached = getCachedToken();
+  if (cached) return cached;
+  // Exchange refresh token for a new API Access Token
+  const refresh = getRefreshToken();
+  if (!refresh) { promptForToken(); throw new Error('No refresh token — please connect the agent'); }
+  const res = await fetch(`${ALATION_BASE}/integration/v1/createAPIAccessToken/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refresh_token: refresh, username: ALATION_USER })
+  });
+  if (!res.ok) {
+    localStorage.removeItem('rm_refresh_token');
+    promptForToken();
+    throw new Error('Refresh token expired or invalid — please reconnect');
+  }
+  const data = await res.json();
+  const token = data.api_access_token;
+  cacheToken(token);
+  return token;
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function callAgent(message) {
+  const token = await getToken();
+  const response = await fetch(AGENT_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ message })
+  });
+
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+  // Handle streaming response (SSE / NDJSON)
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let fullText = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    const chunk = decoder.decode(value, { stream: true });
+
+    // Parse each line — Alation streams newline-delimited JSON or SSE
+    for (const line of chunk.split('\n')) {
+      const trimmed = line.replace(/^data:\s*/, '').trim();
+      if (!trimmed || trimmed === '[DONE]') continue;
+      try {
+        const parsed = JSON.parse(trimmed);
+        // Extract text from various block shapes the API may return
+        const t = parsed.text ?? parsed.content ?? parsed.message ?? '';
+        if (t && parsed.type !== 'thinking' && parsed.type !== 'tool_use' && parsed.type !== 'tool_result') {
+          fullText += t;
+        }
+      } catch (_) {
+        // Non-JSON line — append raw if it looks like content
+        if (trimmed.length > 0 && !trimmed.startsWith('{')) fullText += trimmed;
+      }
+    }
+  }
+
+  return fullText.trim() || '(No response received — check agent configuration)';
+}
+
+function sendSuggestion(el) {
+  const text = el.textContent.trim();
+  document.getElementById('agent-suggestions').style.display = 'none';
+  addMessage(text, 'user');
+  addLoadingMessage();
+  callAgent(text)
+    .then(response => { removeLoadingMessage(); addAgentMessage(response, text); })
+    .catch(err => { removeLoadingMessage(); addAgentMessage(`Connection error: ${err.message}. Check your API token and that the agent is published.`, text); });
+}
+
+function sendMessage() {
+  const input = document.getElementById('agent-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  document.getElementById('agent-suggestions').style.display = 'none';
+  addMessage(text, 'user');
+  addLoadingMessage();
+  callAgent(text)
+    .then(response => { removeLoadingMessage(); addAgentMessage(response, text); })
+    .catch(err => { removeLoadingMessage(); addAgentMessage(`Connection error: ${err.message}. Check your API token and that the agent is published.`, text); });
+}
+
+function addLoadingMessage() {
+  const msgs = document.getElementById('agent-messages');
+  const div = document.createElement('div');
+  div.className = 'msg msg-agent'; div.id = 'msg-loading';
+  div.innerHTML = '<div class="msg-label">RM PREP AGENT</div><div class="msg-bubble" style="color:var(--muted);font-style:italic">Querying governed data product<span id="dots">.</span></div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  // Animate dots
+  let d = 0;
+  window._loadingInterval = setInterval(() => {
+    const el = document.getElementById('dots');
+    if (el) el.textContent = ['.','..','...'][d++ % 3];
+  }, 400);
+}
+
+function removeLoadingMessage() {
+  clearInterval(window._loadingInterval);
+  document.getElementById('msg-loading')?.remove();
+}
+
+function promptForToken() {
+  document.getElementById('token-modal').classList.add('visible');
+  document.getElementById('token-input').focus();
+}
+
+function saveToken() {
+  const val = document.getElementById('token-input').value.trim();
+  if (!val) return;
+  // Store as refresh token (60-day) in localStorage — persists across sessions
+  localStorage.setItem('rm_refresh_token', val);
+  sessionStorage.removeItem('rm_api_token'); // clear any cached access token
+  document.getElementById('token-modal').classList.remove('visible');
+  document.getElementById('token-input').value = '';
+  const ind = document.getElementById('token-indicator');
+  if (ind) { ind.textContent = '✓ Connected'; ind.style.color = 'var(--green)'; }
+}
+
+// Auto-show connect prompt if no refresh token saved
+window.addEventListener('load', () => {
+  if (document.getElementById('app')?.classList.contains('visible')) checkTokenOnLoad();
+});
+function checkTokenOnLoad() {
+  const ind = document.getElementById('token-indicator');
+  if (getRefreshToken()) {
+    if (ind) { ind.textContent = '✓ Connected'; ind.style.color = 'var(--green)'; }
+  }
+}
+
+function addMessage(text, role) {
+  const msgs = document.getElementById('agent-messages');
+  const div = document.createElement('div');
+  div.className = `msg msg-${role}`;
+  div.innerHTML = `<div class="msg-bubble">${text}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addAgentMessage(text, query) {
+  const msgs = document.getElementById('agent-messages');
+  const div = document.createElement('div');
+  div.className = 'msg msg-agent';
+  const sources = query && query.includes('news') ?
+    '<div class="msg-sources"><span class="source-chip">RM_CLIENT_PROFILES</span><span class="source-chip">RM_MARKET_SIGNALS</span><span class="source-chip source-chip-web">Public News</span></div>' :
+    '<div class="msg-sources"><span class="source-chip">RM_CLIENT_PROFILES</span><span class="source-chip">RM_PRODUCT_HOLDINGS</span><span class="source-chip">RM_NEXT_BEST_ACTIONS</span></div>';
+  div.innerHTML = `<div class="msg-label">RM PREP AGENT</div><div class="msg-bubble">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}${sources}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+</script>
+</body>
+</html>

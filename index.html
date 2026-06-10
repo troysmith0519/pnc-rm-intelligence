@@ -336,8 +336,59 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
 .agent-toggle:hover { background: var(--blue-light); transform: scale(1.05); }
 .agent-toggle.hidden { display: none; }
 </style>
+<style>
+/* ── PASSWORD GATE ── */
+#pw-gate {
+  position: fixed; inset: 0; z-index: 9999;
+  background: linear-gradient(135deg, #050D1A 0%, #0B1929 60%, #0D2040 100%);
+  display: flex; align-items: center; justify-content: center;
+}
+.pw-card {
+  background: #132338; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;
+  padding: 44px 40px; width: 380px; text-align: center;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+}
+.pw-logo {
+  width: 52px; height: 52px; background: #2A73D2; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
+  font-size: 18px; font-weight: 800; color: white;
+}
+.pw-card h1 { font-size: 20px; font-weight: 700; color: #E8F0FA; margin-bottom: 6px; }
+.pw-card p  { font-size: 13px; color: #7A9ABF; margin-bottom: 24px; }
+.pw-input {
+  width: 100%; padding: 11px 14px; background: #0B1929; border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 8px; font-size: 15px; color: #E8F0FA; outline: none; margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+.pw-input:focus { border-color: #2A73D2; }
+.pw-btn {
+  width: 100%; padding: 12px; background: #2A73D2; color: white; border: none;
+  border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.pw-btn:hover { background: #3D8EEF; }
+.pw-err { color: #E84C3D; font-size: 12px; margin-top: 8px; display: none; }
+.pw-footer { font-size: 11px; color: #3D5A80; margin-top: 18px; }
+#app { display: none; }
+</style>
 </head>
 <body>
+
+<!-- PASSWORD GATE -->
+<div id="pw-gate">
+  <div class="pw-card">
+    <div class="pw-logo">RM</div>
+    <h1>PNC RM Intelligence</h1>
+    <p>Internal access only — C&IB Relationship Management</p>
+    <input type="password" class="pw-input" id="pw-input" placeholder="Enter password"
+      onkeydown="if(event.key==='Enter')checkPw()">
+    <button class="pw-btn" onclick="checkPw()">Access Intelligence Hub</button>
+    <div class="pw-err" id="pw-err">Incorrect password. Try again.</div>
+    <div class="pw-footer">PNC Commercial Banking · DS/CEM Internal Tool</div>
+  </div>
+</div>
+
+<!-- APP (hidden until password correct) -->
+<div id="app">
 
 <!-- SIDEBAR -->
 <div class="sidebar">
@@ -360,7 +411,10 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
     <div class="nav-item" onclick="showView('dashboard')"><span class="nav-icon">★</span> Opportunities</div>
     <div class="nav-item" onclick="showView('dashboard')"><span class="nav-icon">↻</span> Renewals Due</div>
     <div class="nav-group-label">Tools</div>
-    <div class="nav-item" onclick="toggleAgent()"><span class="nav-icon">✦</span> RM Prep Agent <span id="token-indicator" style="margin-left:auto;font-size:10px;color:var(--muted)" onclick="event.stopPropagation();promptForToken()">⚙ Connect</span></div>
+    <div class="nav-item" onclick="toggleAgent()"><span class="nav-icon">✦</span> RM Prep Agent</div>
+    <div style="padding:4px 12px 10px">
+      <button id="token-indicator" onclick="promptForToken()" style="width:100%;padding:7px 10px;background:rgba(42,115,210,0.15);border:1px solid rgba(42,115,210,0.4);border-radius:6px;color:#3D8EEF;font-size:11px;font-weight:700;cursor:pointer;text-align:center">⚙ Connect Agent →</button>
+    </div>
     <div class="nav-item" onclick="showView('dashboard')"><span class="nav-icon">⎘</span> Brief Archive</div>
   </div>
   <div class="sidebar-user">
@@ -889,6 +943,8 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
 
 </div><!-- /main -->
 
+</div><!-- /app -->
+
 <!-- TOKEN MODAL -->
 <div class="modal-overlay" id="token-modal" onclick="if(event.target===this)this.classList.remove('visible')">
   <div class="modal" style="width:460px">
@@ -977,6 +1033,22 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
 <button class="agent-toggle" onclick="toggleAgent()" id="agent-toggle">✦</button>
 
 <script>
+function checkPw() {
+  const val = document.getElementById('pw-input').value;
+  if (val === 'Alation2026!') {
+    document.getElementById('pw-gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    if (getRefreshToken()) {
+      const ind = document.getElementById('token-indicator');
+      if (ind) { ind.textContent = '✓ Connected'; ind.style.color = 'var(--green)'; }
+    }
+  } else {
+    const err = document.getElementById('pw-err');
+    err.style.display = 'block';
+    document.getElementById('pw-input').select();
+  }
+}
+
 function showView(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + id).classList.add('active');
@@ -1166,18 +1238,7 @@ function saveToken() {
   document.getElementById('token-modal').classList.remove('visible');
   document.getElementById('token-input').value = '';
   const ind = document.getElementById('token-indicator');
-  if (ind) { ind.textContent = '✓ Connected'; ind.style.color = 'var(--green)'; }
-}
-
-// Auto-show connect prompt if no refresh token saved
-window.addEventListener('load', () => {
-  if (document.getElementById('app')?.classList.contains('visible')) checkTokenOnLoad();
-});
-function checkTokenOnLoad() {
-  const ind = document.getElementById('token-indicator');
-  if (getRefreshToken()) {
-    if (ind) { ind.textContent = '✓ Connected'; ind.style.color = 'var(--green)'; }
-  }
+  if (ind) { ind.textContent = '✓ Agent Connected'; ind.style.background = 'rgba(45,184,122,0.15)'; ind.style.borderColor = 'rgba(45,184,122,0.4)'; ind.style.color = '#2DB87A'; }
 }
 
 function addMessage(text, role) {

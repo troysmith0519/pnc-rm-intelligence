@@ -416,7 +416,7 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
     <div class="nav-group-label">Tools</div>
     <div class="nav-item" onclick="toggleAgent()"><span class="nav-icon">✦</span> RM Prep Agent</div>
     <div style="padding:4px 12px 10px">
-      <button id="token-indicator" onclick="promptForToken()" style="width:100%;padding:7px 10px;background:rgba(42,115,210,0.15);border:1px solid rgba(42,115,210,0.4);border-radius:6px;color:#3D8EEF;font-size:11px;font-weight:700;cursor:pointer;text-align:center">⚙ Connect Agent →</button>
+      <button id="token-indicator" onclick="startOAuth()" style="width:100%;padding:7px 10px;background:rgba(42,115,210,0.15);border:1px solid rgba(42,115,210,0.4);border-radius:6px;color:#3D8EEF;font-size:11px;font-weight:700;cursor:pointer;text-align:center">⚙ Connect via Alation →</button>
     </div>
     <div class="nav-item" onclick="showView('dashboard')"><span class="nav-icon">⎘</span> Brief Archive</div>
   </div>
@@ -1209,9 +1209,14 @@ function checkPw() {
     document.getElementById('pw-gate').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     initDynamicDate();
-    if (getStoredToken()) {
+    // Check if we came back from OAuth
+    if (window.location.hash.includes('oauth_success')) {
       const ind = document.getElementById('token-indicator');
       if (ind) { ind.textContent = '✓ Agent Connected'; ind.style.background='rgba(45,184,122,0.15)'; ind.style.borderColor='rgba(45,184,122,0.4)'; ind.style.color='#2DB87A'; }
+      sessionStorage.setItem('rm_session_id', 'oauth');
+      window.history.replaceState(null, '', window.location.pathname);
+    } else {
+      checkOAuthOnLoad();
     }
   } else {
     const err = document.getElementById('pw-err');
@@ -1368,10 +1373,31 @@ const ALATION_USER   = 'troy.smith@alation.com';
 function getStoredToken() { return sessionStorage.getItem('rm_session_id') || sessionStorage.getItem('rm_api_token') || ''; }
 
 async function getToken() {
+  // Check if OAuth token is stored server-side
   const t = getStoredToken();
   if (t) return t;
-  promptForToken();
-  throw new Error('No API token — please connect the agent first');
+  // No local token — trigger OAuth
+  startOAuth();
+  throw new Error('Please connect via Alation OAuth first');
+}
+
+function startOAuth() {
+  // Open OAuth flow in current window — server handles redirect
+  window.location.href = '/oauth/start';
+}
+
+// Check OAuth status on load (server stores token, we just verify it's there)
+async function checkOAuthOnLoad() {
+  try {
+    const r = await fetch('/oauth/status');
+    const d = await r.json();
+    if (d.connected) {
+      const ind = document.getElementById('token-indicator');
+      if (ind) { ind.textContent = '✓ Agent Connected'; ind.style.background='rgba(45,184,122,0.15)'; ind.style.borderColor='rgba(45,184,122,0.4)'; ind.style.color='#2DB87A'; }
+      // Store a flag so getToken knows server has the token
+      sessionStorage.setItem('rm_session_id', 'oauth');
+    }
+  } catch(e) {}
 }
 
 // Keep these for backward compat

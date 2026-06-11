@@ -381,12 +381,12 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
   <div class="pw-card">
     <div class="pw-logo">RM</div>
     <h1>PNC RM Intelligence</h1>
-    <p>Internal access only — C&IB Relationship Management</p>
+    <p>PNC Commercial & Industrial Banking · Authorized Users Only</p>
     <input type="password" class="pw-input" id="pw-input" placeholder="Enter password"
       onkeydown="if(event.key==='Enter')checkPw()">
     <button class="pw-btn" onclick="checkPw()">Access Intelligence Hub</button>
     <div class="pw-err" id="pw-err">Incorrect password. Try again.</div>
-    <div class="pw-footer">PNC Commercial Banking · DS/CEM Internal Tool</div>
+    <div class="pw-footer">PNC Financial Services · C&IB Division</div>
   </div>
 </div>
 
@@ -478,7 +478,7 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
             <div class="fab-score-row"><div class="fab-score-label">Urgency Score</div><div class="fab-score">94</div></div>
             <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:94%"></div></div>
             <div class="fab-reason"><strong>Credit facility renewal in 38 days.</strong> NEGATIVE market signal: supply chain disruption in industrials sector. Open commitment from last call not followed up (22 days).</div>
-            <div class="fab-action"><button class="fab-btn" onclick="showClient('Meridian Manufacturing Group','TIER 1','Industrial Mfg','Jul 14, 2026','CURRENT','22 days ago'); event.stopPropagation()">Open Client + Generate Brief →</button></div>
+            <div class="fab-action"><button class="fab-btn" onclick="showClient('Meridian Manufacturing Group','TIER 1','Industrial Mfg','Jul 14, 2026','CURRENT','22 days ago'); event.stopPropagation()">Open Client →</button></div>
           </div>
           <div class="fab-card" onclick="showClient('Hartwell Capital Partners','TIER 1','Financial Services','Jun 30, 2026','DUE SOON','31 days ago')">
             <div class="fab-rank"># 2 Priority</div>
@@ -998,7 +998,7 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
     <div class="agent-title"><div class="agent-status"></div> RM Prep Agent</div>
     <div class="agent-close" onclick="toggleAgent()">✕</div>
   </div>
-  <div class="agent-bound">Grounded on: <span>RM Meeting Prep — C&IB Daily Intelligence Brief</span> + <span style="color:var(--green)">Public Web</span></div>
+  <div class="agent-bound">Grounded on: <span>RM Client Intelligence — C&IB Pre-Meeting Brief</span></div>
   <div class="agent-messages" id="agent-messages">
     <div class="msg msg-agent">
       <div class="msg-label">RM PREP AGENT</div>

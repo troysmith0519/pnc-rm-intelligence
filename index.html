@@ -1119,11 +1119,11 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
 <div class="modal-overlay" id="token-modal" onclick="if(event.target===this)this.classList.remove('visible')">
   <div class="modal" style="width:460px">
     <div class="modal-title">Connect to RM Prep Agent</div>
-    <div class="modal-sub">Enter your Alation <strong>API Access Token</strong>. Stored for this browser session only — generate a fresh one on demo day.</div>
+    <div class="modal-sub">Enter your Alation <strong>Alation Session ID</strong>. Open DevTools (F12) → Application → Cookies → north-central-ds.mtse.alationcloud.com → copy the <strong>sessionid</strong> value.</div>
     <div class="modal-step">
-      <div class="modal-step-label">API Access Token</div>
-      <input id="token-input" type="password" class="pw-input" placeholder="Paste your API Access Token here" onkeydown="if(event.key==='Enter')saveToken()" style="font-family:monospace;font-size:12px">
-      <div style="font-size:11px;color:var(--muted);margin-top:6px">Get it from: Alation → Account → Authentication → (your refresh token) → Actions → Create API Access Token</div>
+      <div class="modal-step-label">Session ID</div>
+      <input id="token-input" type="password" class="pw-input" placeholder="Paste your Session ID here" onkeydown="if(event.key==='Enter')saveToken()" style="font-family:monospace;font-size:12px">
+      <div style="font-size:11px;color:var(--muted);margin-top:6px">F12 → Application tab → Cookies → north-central-ds.mtse.alationcloud.com → find "sessionid" → copy value</div>
     </div>
     <div class="modal-actions">
       <button class="topbar-btn btn-secondary" onclick="document.getElementById('token-modal').classList.remove('visible')">Cancel</button>
@@ -1365,7 +1365,7 @@ const AGENT_ENDPOINT = (_IS_LOCAL ? '/proxy' : _ALATION_DIRECT) + '/ai/api/v1/ch
 const ALATION_USER   = 'troy.smith@alation.com';
 // API Access Token — stored in sessionStorage for the browser session (24-hour Alation token)
 // User enters once after login. Never re-prompts unless they click Disconnect.
-function getStoredToken() { return sessionStorage.getItem('rm_api_token') || ''; }
+function getStoredToken() { return sessionStorage.getItem('rm_session_id') || sessionStorage.getItem('rm_api_token') || ''; }
 
 async function getToken() {
   const t = getStoredToken();
@@ -1381,12 +1381,16 @@ function getCachedToken() { return getStoredToken(); }
 
 async function callAgent(message) {
   const token = await getToken();
+  // Session ID auth — Alation AI API requires session cookie, not Bearer token
+  const headers = { 'Content-Type': 'application/json' };
+  if (token.startsWith('Bearer ')) {
+    headers['Authorization'] = token;
+  } else {
+    headers['X-Session-Id'] = token;  // proxy converts to Cookie: sessionid=...
+  }
   const response = await fetch(AGENT_ENDPOINT, {
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    },
+    headers,
     body: JSON.stringify({ message })
   });
 
@@ -1494,7 +1498,8 @@ function promptForToken() {
 function saveToken() {
   const val = document.getElementById('token-input').value.trim();
   if (!val) return;
-  sessionStorage.setItem('rm_api_token', val);
+  sessionStorage.setItem('rm_session_id', val);
+  sessionStorage.removeItem('rm_api_token');
   document.getElementById('token-modal').classList.remove('visible');
   document.getElementById('token-input').value = '';
   const ind = document.getElementById('token-indicator');

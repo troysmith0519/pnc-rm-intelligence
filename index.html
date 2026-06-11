@@ -1381,18 +1381,23 @@ function getCachedToken() { return getStoredToken(); }
 
 async function callAgent(message) {
   const token = await getToken();
-  // Session ID auth — Alation AI API requires session cookie, not Bearer token
-  const headers = { 'Content-Type': 'application/json' };
-  if (token.startsWith('Bearer ')) {
-    headers['Authorization'] = token;
-  } else {
-    headers['X-Session-Id'] = token;  // proxy converts to Cookie: sessionid=...
+  // Try direct call first with browser credentials (uses Alation session cookie automatically)
+  // Falls back to proxy with token if direct fails
+  const DIRECT_ENDPOINT = 'https://north-central-ds.mtse.alationcloud.com/ai/api/v1/chats/agent/4eea22b1-3e61-4cda-8489-fe374344a028/stream';
+  const headers = { 'Content-Type': 'application/json', 'X-Session-Id': token };
+  let response;
+  try {
+    response = await fetch(DIRECT_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',  // sends Alation session cookie automatically
+      body: JSON.stringify({ message })
+    });
+    if (!response.ok && response.status === 401) throw new Error('direct auth failed');
+  } catch (e) {
+    // Fall back to proxy
+    response = await fetch(AGENT_ENDPOINT, { method: 'POST', headers, body: JSON.stringify({ message }) });
   }
-  const response = await fetch(AGENT_ENDPOINT, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({ message })
-  });
 
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
 

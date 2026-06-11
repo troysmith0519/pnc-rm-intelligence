@@ -1443,14 +1443,16 @@ async function callAgent(message) {
       if (!trimmed || trimmed === '[DONE]') continue;
       try {
         const parsed = JSON.parse(trimmed);
-        // Alation Agent API shape: {model_message: {parts: [{part_kind: "text", content: "..."}]}}
+        // Alation Agent API: stream sends CUMULATIVE text (not incremental delta)
+        // Use = not += so we always have the latest complete text
         if (parsed.model_message?.parts) {
+          let chunkText = '';
           for (const part of parsed.model_message.parts) {
-            // Only capture human-readable text parts, skip tool calls/returns
             if (part.part_kind === 'text' && part.content) {
-              fullText += part.content;
+              chunkText = part.content;  // take the last text part
             }
           }
+          if (chunkText) fullText = chunkText;  // replace, not append
         }
       } catch (_) {
         if (trimmed.length > 0 && !trimmed.startsWith('{') && !trimmed.startsWith('[')) fullText += trimmed;

@@ -410,9 +410,9 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
     </div>
     <div class="nav-item" onclick="showView('dashboard')"><span class="nav-icon">≡</span> All Clients</div>
     <div class="nav-group-label">Intelligence</div>
-    <div class="nav-item" onclick="showView('dashboard')"><span class="nav-icon">↑</span> Market Signals <span class="nav-badge">3</span></div>
-    <div class="nav-item" onclick="showView('dashboard')"><span class="nav-icon">★</span> Opportunities</div>
-    <div class="nav-item" onclick="showView('dashboard')"><span class="nav-icon">↻</span> Renewals Due</div>
+    <div class="nav-item" onclick="showView('signals')"><span class="nav-icon">↑</span> Market Signals <span class="nav-badge">3</span></div>
+    <div class="nav-item" onclick="showView('opportunities')"><span class="nav-icon">★</span> Opportunities</div>
+    <div class="nav-item" onclick="showView('renewals')"><span class="nav-icon">↻</span> Renewals Due</div>
     <div class="nav-group-label">Tools</div>
     <div class="nav-item" onclick="toggleAgent()"><span class="nav-icon">✦</span> RM Prep Agent</div>
     <div style="padding:4px 12px 10px">
@@ -929,6 +929,187 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
     </div>
 
   </div><!-- /view-client -->
+
+  <!-- MARKET SIGNALS VIEW -->
+  <div class="view" id="view-signals">
+    <div class="topbar">
+      <div class="topbar-title">Market Signals — C&IB Book</div>
+      <div class="topbar-meta">Source: RM_MARKET_SIGNALS · Refreshed daily · 3 HIGH PRIORITY</div>
+      <button class="topbar-btn btn-primary" onclick="toggleAgent()">✦ Ask About Signals</button>
+    </div>
+    <div class="content">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-label">Total Signals</div><div class="stat-value stat-blue">12</div><div class="stat-sub">Active in feed this week</div></div>
+        <div class="stat-card"><div class="stat-label">High Priority (≥70)</div><div class="stat-value stat-orange">3</div><div class="stat-sub">Require proactive RM outreach</div></div>
+        <div class="stat-card"><div class="stat-label">Client-Specific</div><div class="stat-value stat-yellow">4</div><div class="stat-sub">Linked to named accounts</div></div>
+        <div class="stat-card"><div class="stat-label">DQ Alert</div><div class="stat-value stat-orange">3</div><div class="stat-sub">High-relevance signals missing talking point</div></div>
+      </div>
+      <div class="section-title" style="margin-bottom:14px">Active Signals — Ordered by Relevance Score</div>
+
+      <div class="signal-card">
+        <div class="signal-header"><div class="signal-headline">Industrials Supply Chain Disruption — Fabricated Metals Procurement Costs Rise 8–12%</div><span class="signal-badge signal-negative">NEGATIVE · 9.2</span></div>
+        <div class="signal-meta">Jun 9, 2026 · Reuters · Manufacturing, Industrials · Client-specific: Meridian Manufacturing Group</div>
+        <div class="signal-detail">Tariff impacts and reduced domestic supplier capacity are driving procurement cost increases in the fabricated metals sector. Companies with floating-rate credit facilities may face margin compression in H2 2026.</div>
+        <div class="signal-action-box"><div class="signal-action-label">RM Talking Point (PNC Research)</div><div class="signal-action-text">With procurement costs up 8–12%, your manufacturing clients are likely seeing margin pressure — proactively offer working capital revolve increase or FX hedging expansion to bridge the cycle. Lead with this on your next Meridian call.</div></div>
+      </div>
+
+      <div class="signal-card">
+        <div class="signal-header"><div class="signal-headline">Meridian Manufacturing Announces $45M Ohio Facility Expansion</div><span class="signal-badge signal-positive">POSITIVE · 8.4</span></div>
+        <div class="signal-meta">May 28, 2026 · Business Wire · Manufacturing · Client-specific: Meridian Manufacturing Group</div>
+        <div class="signal-detail">Meridian announced a $45M expansion of its Ohio manufacturing campus beginning Q3 2026, citing strong order backlog and increasing domestic sourcing demand.</div>
+        <div class="signal-action-box"><div class="signal-action-label">RM Talking Point (PNC Research)</div><div class="signal-action-text">The Ohio build signals credit appetite increase — explore whether current revolving facility limit meets new capex needs. Construction period cash management = treasury management opportunity.</div></div>
+      </div>
+
+      <div class="signal-card">
+        <div class="signal-header"><div class="signal-headline">Apex Industrial Holdings Appoints New Chief Executive Officer</div><span class="signal-badge signal-watch">WATCH · 7.6</span></div>
+        <div class="signal-meta">Jun 8, 2026 · Bloomberg · Industrial · Client-specific: Apex Industrial Holdings</div>
+        <div class="signal-detail">Board confirmed Sarah Chen as incoming CEO effective July 1. Leadership transitions typically trigger relationship reviews and banking partner reassessments within 90 days.</div>
+        <div class="signal-action-box"><div class="signal-action-label">RM Talking Point (PNC Research)</div><div class="signal-action-text">Schedule a relationship review with the incoming CEO before July 1. New leadership often reassesses banking relationships in the first 90 days — get in early and frame PNC as the incumbent partner for the growth agenda.</div></div>
+      </div>
+
+      <div class="signal-card">
+        <div class="signal-header"><div class="signal-headline">Federal Reserve Signals Gradual Rate Reduction Path Through Q4 2026</div><span class="signal-badge signal-watch">WATCH · 6.8</span></div>
+        <div class="signal-meta">Jun 7, 2026 · Federal Reserve · All Industries · Book-wide signal</div>
+        <div class="signal-detail">Fed guidance suggests 1–2 rate cuts by year-end dependent on inflation trajectory. Companies with floating-rate credit facilities may seek to lock in fixed-rate structures before cuts materialize.</div>
+        <div class="signal-action-box"><div class="signal-action-label">RM Talking Point (PNC Research)</div><div class="signal-action-text">Bring up in any renewal discussion — explore whether clients want to discuss fixed vs. floating rate structure. Capital Markets team can support rate structuring conversations on credit facilities renewing in H2.</div></div>
+      </div>
+
+      <div class="signal-card">
+        <div class="signal-header"><div class="signal-headline">Private Equity Deal Flow Accelerating in North Central — Q2 Activity Up 22%</div><span class="signal-badge signal-positive">POSITIVE · 7.1</span></div>
+        <div class="signal-meta">Jun 5, 2026 · S&P Global · Financial Services · Client-specific: Hartwell Capital Partners</div>
+        <div class="signal-detail">Middle-market PE activity rebounding in North Central with Q2 deal flow up 22% YoY, driven by manufacturing and healthcare sectors.</div>
+        <div class="signal-action-box"><div class="signal-action-label">RM Talking Point (PNC Research)</div><div class="signal-action-text">Strong deal flow context for a Hartwell conversation — position PNC's Capital Markets and Credit capabilities for deal financing. KYC DUE_SOON — resolve before any product pitch.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPPORTUNITIES VIEW -->
+  <div class="view" id="view-opportunities">
+    <div class="topbar">
+      <div class="topbar-title">Opportunities — Cross-Sell & Pipeline</div>
+      <div class="topbar-meta">Source: RM_RENEWAL_PIPELINE · 8 active opportunities · $3.1M revenue opportunity</div>
+      <button class="topbar-btn btn-primary" onclick="toggleAgent()">✦ Ask About Opportunities</button>
+    </div>
+    <div class="content">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-label">Cross-Sell Opportunities</div><div class="stat-value stat-blue">5</div><div class="stat-sub">Identified by analytics team</div></div>
+        <div class="stat-card"><div class="stat-label">Revenue Opportunity</div><div class="stat-value stat-green">$3.1M</div><div class="stat-sub">Incremental annual fees if closed</div></div>
+        <div class="stat-card"><div class="stat-label">High Confidence (≥7.0)</div><div class="stat-value stat-orange">3</div><div class="stat-sub">Priority pitches this week</div></div>
+        <div class="stat-card"><div class="stat-label">Competitive Threats</div><div class="stat-value stat-orange">2</div><div class="stat-sub">HIGH or CRITICAL — escalate to RD</div></div>
+      </div>
+      <div class="section-title" style="margin-bottom:14px">Active Pipeline — Ordered by Priority Score</div>
+
+      <div class="nba-card">
+        <div class="nba-header"><div class="nba-type nba-type-renewal">RENEWAL INITIATION · Meridian Manufacturing Group</div><div class="nba-confidence"><span class="confidence-label">Priority Score</span><span class="confidence-score confidence-high">94</span></div></div>
+        <div class="nba-title">Revolving Credit Facility Renewal — Jul 14 Deadline (38 days)</div>
+        <div class="nba-desc">Revenue at risk: $1.1M/yr. Competitive threat: MODERATE (JPM known to be in conversations). Given supply chain signal and Ohio expansion, strong case for facility limit expansion (+15–20%) and rate structure discussion. Open commitment from May 20 call not resolved — address before renewal terms.</div>
+        <div class="nba-signal-ref">↗ Triggered by: Supply chain signal (Jun 9) + Ohio expansion (May 28) · Pipeline stage: NEGOTIATING</div>
+      </div>
+
+      <div class="nba-card">
+        <div class="nba-header"><div class="nba-type nba-type-pitch">CROSS-SELL · Meridian Manufacturing Group</div><div class="nba-confidence"><span class="confidence-label">Priority Score</span><span class="confidence-score confidence-med">81</span></div></div>
+        <div class="nba-title">Treasury Management Expansion — Ohio Build Cash Positioning</div>
+        <div class="nba-desc">Revenue opportunity: $420K/yr. Meridian holds Controlled Disbursement only. $45M Ohio expansion creates 12–18 month capital deployment cycle — introduce ZBA structure or integrated payables. Peer companies at this revenue band typically hold 2–3 treasury products. Pipeline stage: IDENTIFIED.</div>
+        <div class="nba-signal-ref">↗ Triggered by: Ohio expansion announcement (May 28) · Wallet share gap: 2/7 categories active</div>
+      </div>
+
+      <div class="nba-card">
+        <div class="nba-header"><div class="nba-type nba-type-renewal">RENEWAL INITIATION · Hartwell Capital Partners</div><div class="nba-confidence"><span class="confidence-label">Priority Score</span><span class="confidence-score confidence-high">78</span></div></div>
+        <div class="nba-title">Treasury Management Contract — Jun 30 Renewal (19 days)</div>
+        <div class="nba-desc">Revenue at risk: $820K/yr. ⚠ KYC_STATUS = DUE_REVIEW — must not initiate new product pitch until KYC is current. Resolve KYC before renewal conversation. Competitive threat: LOW. Pipeline stage: PROPOSAL_SENT.</div>
+        <div class="nba-signal-ref">↗ PE deal flow signal positive for relationship expansion post-KYC resolution</div>
+      </div>
+
+      <div class="nba-card">
+        <div class="nba-header"><div class="nba-type nba-type-pitch">COMPETITIVE DEFENSE · Apex Industrial Holdings</div><div class="nba-confidence"><span class="confidence-label">Priority Score</span><span class="confidence-score confidence-med">76</span></div></div>
+        <div class="nba-title">CEO Transition — Relationship Protection Play</div>
+        <div class="nba-desc">Revenue at risk: $1.4M/yr (full book). Competitive threat: HIGH — new CEO Sarah Chen has existing relationships with Citi from prior role. Must schedule relationship review before July 1. Frame PNC as the established, trusted banking partner for the growth agenda. Escalated to Regional Director per policy.</div>
+        <div class="nba-signal-ref">↗ Triggered by: CEO change announcement (Jun 8) · Pipeline stage: IDENTIFIED</div>
+      </div>
+
+      <div class="nba-card">
+        <div class="nba-header"><div class="nba-type nba-type-pitch">CROSS-SELL · Vantage Logistics LLC</div><div class="nba-confidence"><span class="confidence-label">Priority Score</span><span class="confidence-score confidence-med">65</span></div></div>
+        <div class="nba-title">Deposits — Working Capital Optimization</div>
+        <div class="nba-desc">Revenue opportunity: $180K/yr. New procurement VP joined 3 weeks ago — good entry point for treasury conversation. 62 days since last contact (re-engagement required before pitch). Industry: Transportation seeing logistics cost normalization — working capital conversation timely. Pipeline stage: IDENTIFIED.</div>
+        <div class="nba-signal-ref">↗ Wallet share gap: Deposits not held · Last contact: Apr 9, 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RENEWALS VIEW -->
+  <div class="view" id="view-renewals">
+    <div class="topbar">
+      <div class="topbar-title">Renewals Due — Next 90 Days</div>
+      <div class="topbar-meta">Source: RM_PRODUCT_HOLDINGS + RM_RENEWAL_PIPELINE · $3.15M revenue in renewal window</div>
+      <button class="topbar-btn btn-primary" onclick="toggleAgent()">✦ Ask About Renewals</button>
+    </div>
+    <div class="content">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-label">Renewals — 30 Days</div><div class="stat-value stat-orange">3</div><div class="stat-sub">$1.93M at risk</div></div>
+        <div class="stat-card"><div class="stat-label">Renewals — 31–60 Days</div><div class="stat-value stat-yellow">3</div><div class="stat-sub">$0.84M at risk</div></div>
+        <div class="stat-card"><div class="stat-label">Renewals — 61–90 Days</div><div class="stat-value stat-blue">2</div><div class="stat-sub">$0.38M at risk</div></div>
+        <div class="stat-card"><div class="stat-label">DQ Alert</div><div class="stat-value stat-orange">6</div><div class="stat-sub">Active products missing expiry date — invisible to pipeline</div></div>
+      </div>
+      <div class="section-title" style="margin-bottom:14px">Renewal Pipeline — Ordered by Days to Close</div>
+
+      <div class="data-table">
+        <table>
+          <thead><tr><th>Client</th><th>Product</th><th>Expires</th><th>Days</th><th>Revenue at Risk</th><th>Competitive Threat</th><th>Recommended Action</th></tr></thead>
+          <tbody>
+            <tr onclick="showClient('Hartwell Capital Partners','TIER 1','Financial Services','Jun 30, 2026','DUE SOON','31 days ago')">
+              <td><strong>Hartwell Capital Partners</strong><br><span style="font-size:11px;color:var(--muted)">TIER 1 · KYC DUE_REVIEW ⚠</span></td>
+              <td>Treasury Management Contract</td>
+              <td style="color:var(--orange);font-weight:700">Jun 30</td><td style="color:var(--orange);font-weight:700">19d</td>
+              <td>$820K</td>
+              <td><span style="color:var(--muted)">LOW</span></td>
+              <td style="font-size:11px">Resolve KYC DUE_REVIEW before initiating renewal. Schedule call by Jun 15.</td>
+            </tr>
+            <tr onclick="showClient('Meridian Manufacturing Group','TIER 1','Industrial Mfg','Jul 14, 2026','CURRENT','22 days ago')">
+              <td><strong>Meridian Manufacturing Group</strong><br><span style="font-size:11px;color:var(--muted)">TIER 1 · Open commitment overdue</span></td>
+              <td>Revolving Credit Facility</td>
+              <td style="color:var(--orange);font-weight:700">Jul 14</td><td style="color:var(--orange);font-weight:700">38d</td>
+              <td>$1.1M</td>
+              <td><span style="color:var(--yellow)">MODERATE</span></td>
+              <td style="font-size:11px">Initiate renewal with expanded limit discussion. Address open May 20 commitment first.</td>
+            </tr>
+            <tr onclick="showClient('Cornerstone Building Products','TIER 2','Construction','Oct 1, 2026','CURRENT','8 days ago')">
+              <td><strong>Cornerstone Building Products</strong><br><span style="font-size:11px;color:var(--muted)">TIER 2 · Healthy relationship</span></td>
+              <td>Commercial Card Program</td>
+              <td>Jul 22</td><td>46d</td>
+              <td>$310K</td>
+              <td><span style="color:var(--muted)">NONE</span></td>
+              <td style="font-size:11px">Standard renewal — send pricing proposal. Cross-sell: Advisory product (confidence 7.1).</td>
+            </tr>
+            <tr onclick="showClient('Vantage Logistics LLC','TIER 2','Transportation','Sep 15, 2026','CURRENT','62 days ago')">
+              <td><strong>Vantage Logistics LLC</strong><br><span style="font-size:11px;color:var(--muted)">TIER 2 · Re-engagement required</span></td>
+              <td>Payments Facility</td>
+              <td>Aug 5</td><td>60d</td>
+              <td>$285K</td>
+              <td><span style="color:var(--muted)">LOW</span></td>
+              <td style="font-size:11px">Re-engage before renewal. New procurement VP — introduce Deposits cross-sell alongside renewal.</td>
+            </tr>
+            <tr onclick="showClient('Apex Industrial Holdings','TIER 1','Industrial','Aug 2, 2026','CURRENT','14 days ago')">
+              <td><strong>Apex Industrial Holdings</strong><br><span style="font-size:11px;color:var(--muted)">TIER 1 · CEO change risk</span></td>
+              <td>FX Forward Contract</td>
+              <td>Aug 12</td><td>67d</td>
+              <td>$420K</td>
+              <td><span style="color:var(--red)">HIGH ↑ RD</span></td>
+              <td style="font-size:11px">Schedule CEO relationship review before Jul 1. Do not let renewal process before relationship is secured with new leadership.</td>
+            </tr>
+            <tr onclick="showClient('Greenlake Energy Services','TIER 2','Energy','Nov 30, 2026','OVERDUE','45 days ago')">
+              <td><strong>Greenlake Energy Services</strong><br><span style="font-size:11px;color:var(--red)">TIER 2 · KYC OVERDUE — No new pitches</span></td>
+              <td>Interest Rate Swap</td>
+              <td>Sep 15</td><td>97d</td>
+              <td>$210K</td>
+              <td><span style="color:var(--muted)">LOW</span></td>
+              <td style="font-size:11px;color:var(--red)">⚠ KYC OVERDUE — engage compliance before any product conversation. Re-engage RM after KYC resolved.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:10px">⚠ 6 additional active products have NULL CONTRACT_EXPIRY_DATE and are invisible to this pipeline. See DQ monitor: Active Product Missing Expiry Date.</div>
+    </div>
+  </div>
 
 </div><!-- /main -->
 

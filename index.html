@@ -1163,24 +1163,44 @@ async function callAgent(message) {
     if (done) break;
     const chunk = decoder.decode(value, { stream: true });
 
-    // Parse each line — Alation streams newline-delimited JSON or SSE
+    // Parse each line — Alation streams SSE or returns JSON
     for (const line of chunk.split('\n')) {
       const trimmed = line.replace(/^data:\s*/, '').trim();
       if (!trimmed || trimmed === '[DONE]') continue;
       try {
         const parsed = JSON.parse(trimmed);
-        // Extract text from various block shapes the API may return
-        const t = parsed.text ?? parsed.content ?? parsed.message ?? '';
-        if (t && parsed.type !== 'thinking' && parsed.type !== 'tool_use' && parsed.type !== 'tool_result') {
-          fullText += t;
+        // Shape 1: {model_message: {parts: [{part_kind: "assistant-message", content: "..."}]}}
+        if (parsed.model_message?.parts) {
+          for (const part of parsed.model_message.parts) {
+            if (part.part_kind === 'assistant-message' && part.content) {
+              fullText += part.content;
+            }
+          }
+        }
+        // Shape 2: flat {text: "..."} or {content: "..."}
+        else {
+          const t = parsed.text ?? parsed.content ?? parsed.message ?? '';
+          if (t && parsed.type !== 'thinking' && parsed.type !== 'tool_use' && parsed.type !== 'tool_result') {
+            fullText += t;
+          }
         }
       } catch (_) {
-        // Non-JSON line — append raw if it looks like content
-        if (trimmed.length > 0 && !trimmed.startsWith('{')) fullText += trimmed;
+        if (trimmed.length > 0 && !trimmed.startsWith('{') && !trimmed.startsWith('[')) fullText += trimmed;
       }
     }
   }
 
+  // If streaming gave us nothing, try parsing the whole buffer as one JSON object
+  if (!fullText.trim()) {
+    try {
+      const whole = JSON.parse(decoder.decode());
+      if (whole.model_message?.parts) {
+        fullText = whole.model_message.parts
+          .filter(p => p.part_kind === 'assistant-message')
+          .map(p => p.content).join('');
+      }
+    } catch (_) {}
+  }
   return fullText.trim() || '(No response received — check agent configuration)';
 }
 

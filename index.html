@@ -1443,19 +1443,13 @@ async function callAgent(message) {
       if (!trimmed || trimmed === '[DONE]') continue;
       try {
         const parsed = JSON.parse(trimmed);
-        // Shape 1: {model_message: {parts: [{part_kind: "assistant-message", content: "..."}]}}
+        // Alation Agent API shape: {model_message: {parts: [{part_kind: "text", content: "..."}]}}
         if (parsed.model_message?.parts) {
           for (const part of parsed.model_message.parts) {
-            if (part.part_kind === 'assistant-message' && part.content) {
+            // Only capture human-readable text parts, skip tool calls/returns
+            if (part.part_kind === 'text' && part.content) {
               fullText += part.content;
             }
-          }
-        }
-        // Shape 2: flat {text: "..."} or {content: "..."}
-        else {
-          const t = parsed.text ?? parsed.content ?? parsed.message ?? '';
-          if (t && parsed.type !== 'thinking' && parsed.type !== 'tool_use' && parsed.type !== 'tool_result') {
-            fullText += t;
           }
         }
       } catch (_) {

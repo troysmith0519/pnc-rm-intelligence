@@ -435,8 +435,8 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
   <!-- DASHBOARD VIEW -->
   <div class="view active" id="view-dashboard">
     <div class="topbar">
-      <div class="topbar-title">Daily Brief — Wednesday, June 11</div>
-      <div class="topbar-meta">Last refreshed: 5:48 AM</div>
+      <div class="topbar-title" id="daily-brief-title">Daily Brief</div>
+      <div class="topbar-meta" id="brief-refresh-time">Last refreshed: —</div>
       <button class="topbar-btn btn-secondary">⚙ Preferences</button>
       <button class="topbar-btn btn-primary" onclick="toggleAgent()">✦ Open RM Prep Agent</button>
     </div>
@@ -471,65 +471,50 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
           <div class="section-link">Customize ranking logic →</div>
         </div>
         <div class="fab-five-grid">
-          <div class="fab-card fab-rank-1" onclick="showClient()">
+          <div class="fab-card fab-rank-1" onclick="showClient('Meridian Manufacturing Group','TIER 1','Industrial Mfg','Jul 14, 2026','CURRENT','22 days ago')">
             <div class="fab-rank"># 1 Priority</div>
             <div class="fab-name">Meridian Manufacturing Group</div>
             <span class="fab-tier tier-1">TIER 1</span>
-            <div class="fab-score-row">
-              <div class="fab-score-label">Urgency Score</div>
-              <div class="fab-score">94</div>
-            </div>
+            <div class="fab-score-row"><div class="fab-score-label">Urgency Score</div><div class="fab-score">94</div></div>
             <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:94%"></div></div>
             <div class="fab-reason"><strong>Credit facility renewal in 38 days.</strong> NEGATIVE market signal: supply chain disruption in industrials sector. Open commitment from last call not followed up (22 days).</div>
-            <div class="fab-action"><button class="fab-btn" onclick="showClient(); event.stopPropagation()">Open Client + Generate Brief →</button></div>
+            <div class="fab-action"><button class="fab-btn" onclick="showClient('Meridian Manufacturing Group','TIER 1','Industrial Mfg','Jul 14, 2026','CURRENT','22 days ago'); event.stopPropagation()">Open Client + Generate Brief →</button></div>
           </div>
-          <div class="fab-card" onclick="showView('dashboard')">
+          <div class="fab-card" onclick="showClient('Hartwell Capital Partners','TIER 1','Financial Services','Jun 30, 2026','DUE SOON','31 days ago')">
             <div class="fab-rank"># 2 Priority</div>
             <div class="fab-name">Hartwell Capital Partners</div>
             <span class="fab-tier tier-1">TIER 1</span>
-            <div class="fab-score-row">
-              <div class="fab-score-label">Urgency Score</div>
-              <div class="fab-score">81</div>
-            </div>
+            <div class="fab-score-row"><div class="fab-score-label">Urgency Score</div><div class="fab-score">81</div></div>
             <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:81%"></div></div>
             <div class="fab-reason">KYC renewal <strong>DUE SOON</strong>. Treasury management contract up for review Q3. No contact in 31 days.</div>
-            <div class="fab-action"><button class="fab-btn">Open Client →</button></div>
+            <div class="fab-action"><button class="fab-btn" onclick="event.stopPropagation();showClient('Hartwell Capital Partners','TIER 1','Financial Services','Jun 30, 2026','DUE SOON','31 days ago')">Open Client →</button></div>
           </div>
-          <div class="fab-card" onclick="showView('dashboard')">
+          <div class="fab-card" onclick="showClient('Apex Industrial Holdings','TIER 1','Industrial','Aug 2, 2026','CURRENT','14 days ago')">
             <div class="fab-rank"># 3 Priority</div>
             <div class="fab-name">Apex Industrial Holdings</div>
             <span class="fab-tier tier-1">TIER 1</span>
-            <div class="fab-score-row">
-              <div class="fab-score-label">Urgency Score</div>
-              <div class="fab-score">76</div>
-            </div>
+            <div class="fab-score-row"><div class="fab-score-label">Urgency Score</div><div class="fab-score">76</div></div>
             <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:76%"></div></div>
             <div class="fab-reason">CEO change announced this week — <strong>leadership signal</strong>. FX forward contract up for renewal. Cross-sell opportunity: Payments.</div>
-            <div class="fab-action"><button class="fab-btn">Open Client →</button></div>
+            <div class="fab-action"><button class="fab-btn" onclick="event.stopPropagation();showClient('Apex Industrial Holdings','TIER 1','Industrial','Aug 2, 2026','CURRENT','14 days ago')">Open Client →</button></div>
           </div>
-          <div class="fab-card" onclick="showView('dashboard')">
+          <div class="fab-card" onclick="showClient('Vantage Logistics LLC','TIER 2','Transportation','Sep 15, 2026','CURRENT','62 days ago')">
             <div class="fab-rank"># 4 Priority</div>
             <div class="fab-name">Vantage Logistics LLC</div>
             <span class="fab-tier tier-2">TIER 2</span>
-            <div class="fab-score-row">
-              <div class="fab-score-label">Urgency Score</div>
-              <div class="fab-score">68</div>
-            </div>
+            <div class="fab-score-row"><div class="fab-score-label">Urgency Score</div><div class="fab-score">68</div></div>
             <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:68%; background: var(--yellow);"></div></div>
             <div class="fab-reason">62 days since last contact — <strong>re-engagement flag</strong>. New procurement VP joined 3 weeks ago. Deposits cross-sell rated 7.8 confidence.</div>
-            <div class="fab-action"><button class="fab-btn">Open Client →</button></div>
+            <div class="fab-action"><button class="fab-btn" onclick="event.stopPropagation();showClient('Vantage Logistics LLC','TIER 2','Transportation','Sep 15, 2026','CURRENT','62 days ago')">Open Client →</button></div>
           </div>
-          <div class="fab-card" onclick="showView('dashboard')">
+          <div class="fab-card" onclick="showClient('Cornerstone Building Products','TIER 2','Construction','Oct 1, 2026','CURRENT','8 days ago')">
             <div class="fab-rank"># 5 Priority</div>
             <div class="fab-name">Cornerstone Building Products</div>
             <span class="fab-tier tier-2">TIER 2</span>
-            <div class="fab-score-row">
-              <div class="fab-score-label">Urgency Score</div>
-              <div class="fab-score">61</div>
-            </div>
+            <div class="fab-score-row"><div class="fab-score-label">Urgency Score</div><div class="fab-score">61</div></div>
             <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:61%; background: var(--yellow);"></div></div>
             <div class="fab-reason">Advisory product pitch — confidence 7.1. Earnings release tomorrow; monitor for M&A signals. Relationship health: stable.</div>
-            <div class="fab-action"><button class="fab-btn">Open Client →</button></div>
+            <div class="fab-action"><button class="fab-btn" onclick="event.stopPropagation();showClient('Cornerstone Building Products','TIER 2','Construction','Oct 1, 2026','CURRENT','8 days ago')">Open Client →</button></div>
           </div>
         </div>
       </div>
@@ -546,7 +531,7 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
               <th>Client Name</th><th>Tier</th><th>Industry</th><th>Renewal Date</th><th>KYC Status</th><th>Last Contact</th><th>Urgency</th>
             </tr></thead>
             <tbody>
-              <tr onclick="showClient()">
+              <tr onclick="showClient('Meridian Manufacturing Group','TIER 1','Industrial Mfg','Jul 14, 2026','CURRENT','22 days ago')">
                 <td class="td-name">Meridian Manufacturing Group</td>
                 <td><span class="fab-tier tier-1" style="margin:0">TIER 1</span></td>
                 <td style="color:var(--muted)">Industrial Mfg</td><td>Jul 14, 2026</td>
@@ -554,7 +539,7 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
                 <td>22 days ago</td>
                 <td><span class="urgency-dot urgency-high"></span>High</td>
               </tr>
-              <tr>
+              <tr onclick="showClient('Hartwell Capital Partners','TIER 1','Financial Services','Jun 30, 2026','DUE SOON','31 days ago')">
                 <td class="td-name">Hartwell Capital Partners</td>
                 <td><span class="fab-tier tier-1" style="margin:0">TIER 1</span></td>
                 <td style="color:var(--muted)">Financial Services</td><td>Jun 30, 2026</td>
@@ -801,7 +786,8 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
           </div>
           <div class="brief-export-btns">
             <button class="topbar-btn btn-secondary">📱 Mobile View</button>
-            <button class="topbar-btn btn-primary">⬇ Export PDF</button>
+            <button id="download-brief-btn" class="topbar-btn btn-primary" style="display:none" onclick="downloadBrief(this)">⬇ Download Brief</button>
+            <button class="topbar-btn btn-primary" onclick="showModal()">✦ Regenerate</button>
           </div>
         </div>
 
@@ -1041,9 +1027,10 @@ function checkPw() {
   if (val === 'Alation2026!') {
     document.getElementById('pw-gate').style.display = 'none';
     document.getElementById('app').style.display = 'block';
+    initDynamicDate();
     if (getRefreshToken()) {
       const ind = document.getElementById('token-indicator');
-      if (ind) { ind.textContent = '✓ Connected'; ind.style.color = 'var(--green)'; }
+      if (ind) { ind.textContent = '✓ Agent Connected'; ind.style.background='rgba(45,184,122,0.15)'; ind.style.borderColor='rgba(45,184,122,0.4)'; ind.style.color='#2DB87A'; }
     }
   } else {
     const err = document.getElementById('pw-err');
@@ -1052,13 +1039,51 @@ function checkPw() {
   }
 }
 
+function initDynamicDate() {
+  const now = new Date();
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const dayName = days[now.getDay()];
+  const monthName = months[now.getMonth()];
+  const dateStr = `${dayName}, ${monthName} ${now.getDate()}`;
+  const titleEl = document.getElementById('daily-brief-title');
+  if (titleEl) titleEl.textContent = `Daily Brief — ${dateStr}`;
+  const refreshEl = document.getElementById('brief-refresh-time');
+  const h = now.getHours(), m = now.getMinutes().toString().padStart(2,'0');
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  if (refreshEl) refreshEl.textContent = `Last refreshed: ${h % 12 || 12}:${m} ${ampm}`;
+  // Also update topbar on header of app
+  const header = document.querySelector('.header-badge');
+  if (header) header.textContent = `Last updated: ${monthName.slice(0,3)} ${now.getDate()}, ${now.getFullYear()}`;
+}
+
 function showView(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 }
 
-function showClient() {
+let currentClient = 'Meridian Manufacturing Group';
+let currentClientMeta = { tier:'TIER 1', industry:'Industrial Mfg', renewal:'Jul 14, 2026', kyc:'CURRENT', lastContact:'22 days ago' };
+
+function showClient(name, tier, industry, renewal, kyc, lastContact) {
+  if (name) {
+    currentClient = name;
+    currentClientMeta = { tier, industry, renewal, kyc, lastContact };
+    // Update client header dynamically
+    const nameEl = document.querySelector('.client-name');
+    if (nameEl) nameEl.textContent = name;
+    const metaEl = document.querySelector('.client-meta');
+    if (metaEl) metaEl.innerHTML = `${industry} &nbsp;·&nbsp; <strong>${tier}</strong> &nbsp;·&nbsp; <span id="kyc-status-display">${kyc}</span> &nbsp;·&nbsp; Last contact: ${lastContact}`;
+    const renewalEl = document.querySelector('.client-stat-value.stat-orange, .client-stat-value');
+    if (renewalEl) renewalEl.textContent = renewal;
+    // Update modal subtitle
+    const modalSub = document.querySelector('#modal-content .modal-sub');
+    if (modalSub) modalSub.textContent = `${name} · ${new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'})}`;
+    // Update brief title
+    const briefSub = document.querySelector('.brief-sub');
+    if (briefSub) briefSub.textContent = `${name} · Generated ${new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'})}`;
+  }
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-client').classList.add('active');
   showTab('overview');
@@ -1094,10 +1119,52 @@ function selectOption(el) {
 function generateBrief() {
   document.getElementById('modal-step1').style.display = 'none';
   document.getElementById('modal-generating').style.display = 'block';
-  setTimeout(() => {
+
+  const selectedType = document.querySelector('#modal-step1 .option-btn.selected')?.querySelector('strong')?.textContent || 'Meeting';
+  const prompt = `Generate a complete pre-meeting brief for ${currentClient} formatted as a Meeting Excellence Guide. Include these sections: 1. Meeting Snapshot (client, tier, renewal date, key contacts), 2. Win Conditions (PNC win and client win), 3. Know the Room (primary contact, what they care about, watch-fors), 4. Live Meeting Guide (open, discover, deliver, close phases with specific talking points), 5. Top 3 Objections with responses, 6. Post-Call Actions. Meeting type: ${selectedType}. Pull all available data from the governed tables.`;
+
+  callAgent(prompt).then(response => {
     hideModal();
     showTab('brief');
-  }, 2800);
+    // Inject agent response into the brief tab
+    const briefContainer = document.querySelector('.brief-container');
+    if (briefContainer) {
+      // Add agent-generated content section
+      const agentBrief = document.createElement('div');
+      agentBrief.id = 'agent-brief-content';
+      agentBrief.style.cssText = 'background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:16px;white-space:pre-wrap;font-size:13px;line-height:1.8;';
+      agentBrief.innerHTML = `<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--blue-light);margin-bottom:12px">✦ AI-GENERATED BRIEF — ${currentClient}</div>` +
+        response.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+      // Insert before first section card
+      const firstCard = briefContainer.querySelector('.section-card');
+      if (firstCard) briefContainer.insertBefore(agentBrief, firstCard);
+      else briefContainer.appendChild(agentBrief);
+      // Show download button
+      const dlBtn = document.getElementById('download-brief-btn');
+      if (dlBtn) { dlBtn.style.display = 'flex'; dlBtn._content = response; dlBtn._client = currentClient; }
+    }
+  }).catch(err => {
+    hideModal();
+    showTab('brief');
+    const briefContainer = document.querySelector('.brief-container');
+    if (briefContainer) {
+      const errEl = document.createElement('div');
+      errEl.style.cssText = 'background:rgba(232,76,61,0.1);border:1px solid rgba(232,76,61,0.3);border-radius:10px;padding:20px;margin-bottom:16px;font-size:13px;color:var(--red);';
+      errEl.textContent = `Could not generate AI brief: ${err.message}. The static brief template is shown below.`;
+      const firstCard = briefContainer.querySelector('.section-card');
+      if (firstCard) briefContainer.insertBefore(errEl, firstCard);
+    }
+  });
+}
+
+function downloadBrief(btn) {
+  const content = btn._content || 'No brief content available';
+  const client = btn._client || 'Client';
+  const blob = new Blob([`PNC RM Intelligence — Meeting Brief\n${client}\n${new Date().toLocaleDateString()}\n\n${content}`], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${client.replace(/\s+/g,'-')}-Meeting-Brief.txt`;
+  a.click();
 }
 
 let agentOpen = false;

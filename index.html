@@ -1356,8 +1356,12 @@ function toggleAgent() {
 }
 
 // ── AGENT CONFIG ─────────────────────────────────────────────────────────────
-const AGENT_ENDPOINT = 'https://north-central-ds.mtse.alationcloud.com/ai/api/v1/chats/agent/4eea22b1-3e61-4cda-8489-fe374344a028/stream';
-const ALATION_BASE   = 'https://north-central-ds.mtse.alationcloud.com';
+// When running via server.py (localhost), calls go through /proxy/ to avoid CORS.
+// When hosted on GitHub Pages, calls go directly (will fail due to CORS — use server.py for live use).
+const _ALATION_DIRECT = 'https://north-central-ds.mtse.alationcloud.com';
+const _IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const ALATION_BASE   = _IS_LOCAL ? '' : _ALATION_DIRECT;  // empty = use proxy paths
+const AGENT_ENDPOINT = (_IS_LOCAL ? '/proxy' : _ALATION_DIRECT) + '/ai/api/v1/chats/agent/4eea22b1-3e61-4cda-8489-fe374344a028/stream';
 const ALATION_USER   = 'troy.smith@alation.com';
 // Refresh token (60-day) → auto-generates 24-hour API Access Tokens
 function getRefreshToken() { return localStorage.getItem('rm_refresh_token') || ''; }
@@ -1371,7 +1375,8 @@ async function getToken() {
   // Exchange refresh token for a new API Access Token
   const refresh = getRefreshToken();
   if (!refresh) { promptForToken(); throw new Error('No refresh token — please connect the agent'); }
-  const res = await fetch(`${ALATION_BASE}/integration/v1/createAPIAccessToken/`, {
+  const tokenBase = _IS_LOCAL ? '/proxy' : _ALATION_DIRECT;
+  const res = await fetch(`${tokenBase}/integration/v1/createAPIAccessToken/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refresh_token: refresh, username: ALATION_USER })

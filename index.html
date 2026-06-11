@@ -1531,6 +1531,22 @@ function saveToken() {
   if (ind) { ind.textContent = '\u2713 Agent Connected'; ind.style.background = 'rgba(45,184,122,0.15)'; ind.style.borderColor = 'rgba(45,184,122,0.4)'; ind.style.color = '#2DB87A'; }
 }
 
+function renderMarkdown(text) {
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')  // escape HTML
+    .replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/^### (.+)$/gm,'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--blue-light);margin:10px 0 4px">$1</div>')
+    .replace(/^## (.+)$/gm,'<div style="font-size:13px;font-weight:700;color:var(--text);margin:12px 0 4px">$1</div>')
+    .replace(/^# (.+)$/gm,'<div style="font-size:14px;font-weight:800;color:var(--text);margin:12px 0 6px">$1</div>')
+    .replace(/^[-*] (.+)$/gm,'<div style="display:flex;gap:6px;margin:2px 0"><span style="color:var(--orange);flex-shrink:0">•</span><span>$1</span></div>')
+    .replace(/^(\d+)\. (.+)$/gm,'<div style="display:flex;gap:6px;margin:2px 0"><span style="color:var(--blue-light);flex-shrink:0;font-weight:700">$1.</span><span>$2</span></div>')
+    .replace(/`([^`]+)`/g,'<code style="background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:3px;font-family:monospace;font-size:11px">$1</code>')
+    .replace(/\n\n/g,'<br><br>')
+    .replace(/\n/g,'<br>');
+}
+
 function addMessage(text, role) {
   const msgs = document.getElementById('agent-messages');
   const div = document.createElement('div');
@@ -1547,7 +1563,7 @@ function addAgentMessage(text, query) {
   const sources = query && query.includes('news') ?
     '<div class="msg-sources"><span class="source-chip">RM_CLIENT_PROFILES</span><span class="source-chip">RM_MARKET_SIGNALS</span><span class="source-chip source-chip-web">Public News</span></div>' :
     '<div class="msg-sources"><span class="source-chip">RM_CLIENT_PROFILES</span><span class="source-chip">RM_PRODUCT_HOLDINGS</span><span class="source-chip">RM_NEXT_BEST_ACTIONS</span></div>';
-  div.innerHTML = `<div class="msg-label">RM PREP AGENT</div><div class="msg-bubble">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}${sources}</div>`;
+  div.innerHTML = `<div class="msg-label">RM PREP AGENT</div><div class="msg-bubble">${renderMarkdown(text)}${sources}</div>`;
   msgs.appendChild(div);
   msgs.scrollTop = msgs.scrollHeight;
 }

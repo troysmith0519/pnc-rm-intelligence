@@ -1119,11 +1119,11 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
 <div class="modal-overlay" id="token-modal" onclick="if(event.target===this)this.classList.remove('visible')">
   <div class="modal" style="width:460px">
     <div class="modal-title">Connect to RM Prep Agent</div>
-    <div class="modal-sub">Enter your Alation <strong>Refresh Token</strong> to activate the live agent. Valid for 60 days — the app handles API token renewal automatically.</div>
+    <div class="modal-sub">Enter your Alation <strong>API Access Token</strong>. Stored for this browser session only — generate a fresh one on demo day.</div>
     <div class="modal-step">
-      <div class="modal-step-label">Refresh Token (60-day)</div>
-      <input id="token-input" type="password" class="pw-input" placeholder="Paste your Refresh Token here" onkeydown="if(event.key==='Enter')saveToken()" style="font-family:monospace;font-size:12px">
-      <div style="font-size:11px;color:var(--muted);margin-top:6px">Found at: Alation → Account → Authentication → your active Refresh Token → copy the token value</div>
+      <div class="modal-step-label">API Access Token</div>
+      <input id="token-input" type="password" class="pw-input" placeholder="Paste your API Access Token here" onkeydown="if(event.key==='Enter')saveToken()" style="font-family:monospace;font-size:12px">
+      <div style="font-size:11px;color:var(--muted);margin-top:6px">Get it from: Alation → Account → Authentication → (your refresh token) → Actions → Create API Access Token</div>
     </div>
     <div class="modal-actions">
       <button class="topbar-btn btn-secondary" onclick="document.getElementById('token-modal').classList.remove('visible')">Cancel</button>
@@ -1363,34 +1363,20 @@ const _IS_LOCAL = window.location.hostname === 'localhost' || window.location.ho
 const ALATION_BASE   = _IS_LOCAL ? '' : _ALATION_DIRECT;  // empty = use proxy paths
 const AGENT_ENDPOINT = (_IS_LOCAL ? '/proxy' : _ALATION_DIRECT) + '/ai/api/v1/chats/agent/4eea22b1-3e61-4cda-8489-fe374344a028/stream';
 const ALATION_USER   = 'troy.smith@alation.com';
-// Refresh token (60-day) → auto-generates 24-hour API Access Tokens
-function getRefreshToken() { return localStorage.getItem('rm_refresh_token') || ''; }
-function getCachedToken()  { return sessionStorage.getItem('rm_api_token') || ''; }
-function cacheToken(t)     { sessionStorage.setItem('rm_api_token', t); }
+// API Access Token — stored in sessionStorage for the browser session (24-hour Alation token)
+// User enters once after login. Never re-prompts unless they click Disconnect.
+function getStoredToken() { return sessionStorage.getItem('rm_api_token') || ''; }
 
 async function getToken() {
-  // Return cached access token if still valid this session
-  const cached = getCachedToken();
-  if (cached) return cached;
-  // Exchange refresh token for a new API Access Token
-  const refresh = getRefreshToken();
-  if (!refresh) { promptForToken(); throw new Error('No refresh token — please connect the agent'); }
-  const tokenBase = _IS_LOCAL ? '/proxy' : _ALATION_DIRECT;
-  const res = await fetch(`${tokenBase}/integration/v1/createAPIAccessToken/`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ refresh_token: refresh, username: ALATION_USER })
-  });
-  if (!res.ok) {
-    localStorage.removeItem('rm_refresh_token');
-    promptForToken();
-    throw new Error('Refresh token expired or invalid — please reconnect');
-  }
-  const data = await res.json();
-  const token = data.api_access_token;
-  cacheToken(token);
-  return token;
+  const t = getStoredToken();
+  if (t) return t;
+  promptForToken();
+  throw new Error('No API token — please connect the agent first');
 }
+
+// Keep these for backward compat
+function getRefreshToken() { return ''; }
+function getCachedToken() { return getStoredToken(); }
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function callAgent(message) {
@@ -1508,13 +1494,11 @@ function promptForToken() {
 function saveToken() {
   const val = document.getElementById('token-input').value.trim();
   if (!val) return;
-  // Store as refresh token (60-day) in localStorage — persists across sessions
-  localStorage.setItem('rm_refresh_token', val);
-  sessionStorage.removeItem('rm_api_token'); // clear any cached access token
+  sessionStorage.setItem('rm_api_token', val);
   document.getElementById('token-modal').classList.remove('visible');
   document.getElementById('token-input').value = '';
   const ind = document.getElementById('token-indicator');
-  if (ind) { ind.textContent = '✓ Agent Connected'; ind.style.background = 'rgba(45,184,122,0.15)'; ind.style.borderColor = 'rgba(45,184,122,0.4)'; ind.style.color = '#2DB87A'; }
+  if (ind) { ind.textContent = '\u2713 Agent Connected'; ind.style.background = 'rgba(45,184,122,0.15)'; ind.style.borderColor = 'rgba(45,184,122,0.4)'; ind.style.color = '#2DB87A'; }
 }
 
 function addMessage(text, role) {

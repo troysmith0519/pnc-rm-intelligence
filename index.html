@@ -1,3 +1,4 @@
+STATS: REPLACED
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -443,77 +444,86 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
     <div class="content">
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-label">Portfolio ARR</div>
+          <div class="stat-label">Total Book Value</div>
           <div class="stat-value stat-blue">$124M</div>
-          <div class="stat-sub">Across 47 active relationships</div>
+          <div class="stat-sub">Across 6 active TIER 1 and TIER 2 relationships</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Renewals — 60 Days</div>
-          <div class="stat-value stat-orange">8</div>
-          <div class="stat-sub">$31.2M in renewal value</div>
+          <div class="stat-label">Renewals — 90 Days</div>
+          <div class="stat-value stat-orange">2</div>
+          <div class="stat-sub">$31.2M at risk — Hartwell + Meridian</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Market Signals</div>
-          <div class="stat-value stat-yellow">12</div>
-          <div class="stat-sub">3 HIGH PRIORITY this morning</div>
+          <div class="stat-label">DQ Alerts Active</div>
+          <div class="stat-value stat-yellow">3</div>
+          <div class="stat-sub">KYC overdue · Renewal risk · Lapse risk</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Open Commitments</div>
-          <div class="stat-value stat-blue">4</div>
-          <div class="stat-sub">2 past 30-day follow-up window</div>
+          <div class="stat-label">Pipeline Value</div>
+          <div class="stat-value stat-blue">$48M</div>
+          <div class="stat-sub">Weighted across active deals</div>
         </div>
       </div>
 
       <!-- FAB FIVE -->
       <div class="section">
         <div class="section-header">
-          <div class="section-title">⚡ Today's Fab Five — Priority Contacts</div>
+          <div class="section-title">⚡ Today's Fab Five — Priority Actions</div>
           <div class="section-link">Customize ranking logic →</div>
         </div>
-        <div class="fab-five-grid">
-          <div class="fab-card fab-rank-1" onclick="showClient('Meridian Manufacturing Group','TIER 1','Industrial Mfg','Jul 14, 2026','CURRENT','22 days ago')">
-            <div class="fab-rank"># 1 Priority</div>
+        <div class="fab-five-grid" style="grid-template-columns: repeat(3,1fr)">
+          <div class="fab-card" onclick="showClient('Meridian Manufacturing Group','TIER 1','Industrial Mfg','Jul 14, 2026','CURRENT','22 days ago')">
+            <div class="fab-rank" style="color:var(--orange)"># 1 Priority</div>
             <div class="fab-name">Meridian Manufacturing Group</div>
             <span class="fab-tier tier-1">TIER 1</span>
-            <div class="fab-score-row"><div class="fab-score-label">Urgency Score</div><div class="fab-score">94</div></div>
-            <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:94%"></div></div>
-            <div class="fab-reason"><strong>Credit facility renewal in 38 days.</strong> NEGATIVE market signal: supply chain disruption in industrials sector. Open commitment from last call not followed up (22 days).</div>
+            <div class="fab-score-row"><div class="fab-score-label">Urgency</div><div class="fab-score" style="font-size:16px;color:var(--orange)">HIGH</div></div>
+            <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:94%;background:var(--orange)"></div></div>
+            <div class="fab-reason"><strong>Renewal Jul 14 — 33 days.</strong> Last contact 22 days ago — approaching TIER 1 threshold. Supply chain signal active in Industrial sector.</div>
             <div class="fab-action"><button class="fab-btn" onclick="showClient('Meridian Manufacturing Group','TIER 1','Industrial Mfg','Jul 14, 2026','CURRENT','22 days ago'); event.stopPropagation()">Open Client →</button></div>
           </div>
           <div class="fab-card" onclick="showClient('Hartwell Capital Partners','TIER 1','Financial Services','Jun 30, 2026','DUE SOON','31 days ago')">
             <div class="fab-rank"># 2 Priority</div>
             <div class="fab-name">Hartwell Capital Partners</div>
             <span class="fab-tier tier-1">TIER 1</span>
-            <div class="fab-score-row"><div class="fab-score-label">Urgency Score</div><div class="fab-score">81</div></div>
-            <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:81%"></div></div>
-            <div class="fab-reason">KYC renewal <strong>DUE SOON</strong>. Treasury management contract up for review Q3. No contact in 31 days.</div>
+            <div class="fab-score-row"><div class="fab-score-label">Urgency</div><div class="fab-score" style="font-size:16px;color:var(--orange)">HIGH</div></div>
+            <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:89%;background:var(--orange)"></div></div>
+            <div class="fab-reason"><strong>Renewal Jun 30 — 19 days.</strong> KYC <strong>DUE SOON</strong> — resolve before renewal conversation. Last contact 31 days ago — TIER 1 lapse threshold exceeded.</div>
             <div class="fab-action"><button class="fab-btn" onclick="event.stopPropagation();showClient('Hartwell Capital Partners','TIER 1','Financial Services','Jun 30, 2026','DUE SOON','31 days ago')">Open Client →</button></div>
           </div>
-          <div class="fab-card" onclick="showClient('Apex Industrial Holdings','TIER 1','Industrial','Aug 2, 2026','CURRENT','14 days ago')">
+          <div class="fab-card" onclick="showClient('Greenlake Energy Services','TIER 2','Energy','Nov 30, 2026','OVERDUE','45 days ago')">
             <div class="fab-rank"># 3 Priority</div>
-            <div class="fab-name">Apex Industrial Holdings</div>
-            <span class="fab-tier tier-1">TIER 1</span>
-            <div class="fab-score-row"><div class="fab-score-label">Urgency Score</div><div class="fab-score">76</div></div>
-            <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:76%"></div></div>
-            <div class="fab-reason">CEO change announced this week — <strong>leadership signal</strong>. FX forward contract up for renewal. Cross-sell opportunity: Payments.</div>
-            <div class="fab-action"><button class="fab-btn" onclick="event.stopPropagation();showClient('Apex Industrial Holdings','TIER 1','Industrial','Aug 2, 2026','CURRENT','14 days ago')">Open Client →</button></div>
+            <div class="fab-name">Greenlake Energy Services</div>
+            <span class="fab-tier tier-2">TIER 2</span>
+            <div class="fab-score-row"><div class="fab-score-label">Urgency</div><div class="fab-score" style="font-size:16px;color:var(--orange)">HIGH</div></div>
+            <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:82%;background:var(--orange)"></div></div>
+            <div class="fab-reason">KYC status <strong>OVERDUE</strong> — active regulatory exposure. Blocks facility changes and new product pitches. Escalate to KYC analyst within 24 hours.</div>
+            <div class="fab-action"><button class="fab-btn" onclick="event.stopPropagation();showClient('Greenlake Energy Services','TIER 2','Energy','Nov 30, 2026','OVERDUE','45 days ago')">Open Client →</button></div>
           </div>
           <div class="fab-card" onclick="showClient('Vantage Logistics LLC','TIER 2','Transportation','Sep 15, 2026','CURRENT','62 days ago')">
             <div class="fab-rank"># 4 Priority</div>
             <div class="fab-name">Vantage Logistics LLC</div>
             <span class="fab-tier tier-2">TIER 2</span>
-            <div class="fab-score-row"><div class="fab-score-label">Urgency Score</div><div class="fab-score">68</div></div>
-            <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:68%; background: var(--yellow);"></div></div>
-            <div class="fab-reason">62 days since last contact — <strong>re-engagement flag</strong>. New procurement VP joined 3 weeks ago. Deposits cross-sell rated 7.8 confidence.</div>
+            <div class="fab-score-row"><div class="fab-score-label">Urgency</div><div class="fab-score" style="font-size:16px;color:var(--yellow)">MEDIUM</div></div>
+            <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:65%;background:var(--yellow)"></div></div>
+            <div class="fab-reason">62 days since last contact — TIER 2 lapse threshold (45d) exceeded. New procurement VP joined 3 weeks ago — competitor vulnerability window open.</div>
             <div class="fab-action"><button class="fab-btn" onclick="event.stopPropagation();showClient('Vantage Logistics LLC','TIER 2','Transportation','Sep 15, 2026','CURRENT','62 days ago')">Open Client →</button></div>
           </div>
-          <div class="fab-card" onclick="showClient('Cornerstone Building Products','TIER 2','Construction','Oct 1, 2026','CURRENT','8 days ago')">
+          <div class="fab-card" onclick="showClient('Apex Industrial Holdings','TIER 1','Industrial','Aug 2, 2026','CURRENT','14 days ago')">
             <div class="fab-rank"># 5 Priority</div>
+            <div class="fab-name">Apex Industrial Holdings</div>
+            <span class="fab-tier tier-1">TIER 1</span>
+            <div class="fab-score-row"><div class="fab-score-label">Urgency</div><div class="fab-score" style="font-size:16px;color:var(--yellow)">MEDIUM</div></div>
+            <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:58%;background:var(--yellow)"></div></div>
+            <div class="fab-reason">CEO change announced this week — leadership signal. FX hedging programme up for review Aug 2. Cross-sell opportunity: Treasury Management.</div>
+            <div class="fab-action"><button class="fab-btn" onclick="event.stopPropagation();showClient('Apex Industrial Holdings','TIER 1','Industrial','Aug 2, 2026','CURRENT','14 days ago')">Open Client →</button></div>
+          </div>
+          <div class="fab-card" onclick="showClient('Cornerstone Building Products','TIER 2','Construction','Oct 1, 2026','CURRENT','8 days ago')">
+            <div class="fab-rank"># 6 Priority</div>
             <div class="fab-name">Cornerstone Building Products</div>
             <span class="fab-tier tier-2">TIER 2</span>
-            <div class="fab-score-row"><div class="fab-score-label">Urgency Score</div><div class="fab-score">61</div></div>
-            <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:61%; background: var(--yellow);"></div></div>
-            <div class="fab-reason">Advisory product pitch — confidence 7.1. Earnings release tomorrow; monitor for M&A signals. Relationship health: stable.</div>
+            <div class="fab-score-row"><div class="fab-score-label">Urgency</div><div class="fab-score" style="font-size:16px;color:var(--muted)">LOW</div></div>
+            <div class="fab-urgency-bar"><div class="fab-urgency-fill" style="width:38%;background:var(--muted)"></div></div>
+            <div class="fab-reason">Relationship health stable. Deal pipeline active — advisory product proposal in documentation stage. Earnings release in 2 days.</div>
             <div class="fab-action"><button class="fab-btn" onclick="event.stopPropagation();showClient('Cornerstone Building Products','TIER 2','Construction','Oct 1, 2026','CURRENT','8 days ago')">Open Client →</button></div>
           </div>
         </div>
@@ -547,15 +557,15 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
                 <td>31 days ago</td>
                 <td><span class="urgency-dot urgency-high"></span>High</td>
               </tr>
-              <tr>
+              <tr onclick="showClient('Apex Industrial Holdings','TIER 1','Industrial','Aug 2, 2026','CURRENT','14 days ago')">
                 <td class="td-name">Apex Industrial Holdings</td>
                 <td><span class="fab-tier tier-1" style="margin:0">TIER 1</span></td>
                 <td style="color:var(--muted)">Industrial</td><td>Aug 2, 2026</td>
                 <td><span class="kyc-badge kyc-current">CURRENT</span></td>
                 <td>14 days ago</td>
-                <td><span class="urgency-dot urgency-high"></span>High</td>
+                <td><span class="urgency-dot urgency-med"></span>Medium</td>
               </tr>
-              <tr>
+              <tr onclick="showClient('Vantage Logistics LLC','TIER 2','Transportation','Sep 15, 2026','CURRENT','62 days ago')">
                 <td class="td-name">Vantage Logistics LLC</td>
                 <td><span class="fab-tier tier-2" style="margin:0">TIER 2</span></td>
                 <td style="color:var(--muted)">Transportation</td><td>Sep 15, 2026</td>
@@ -563,21 +573,21 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
                 <td>62 days ago</td>
                 <td><span class="urgency-dot urgency-med"></span>Medium</td>
               </tr>
-              <tr>
+              <tr onclick="showClient('Cornerstone Building Products','TIER 2','Construction','Oct 1, 2026','CURRENT','8 days ago')">
                 <td class="td-name">Cornerstone Building Products</td>
                 <td><span class="fab-tier tier-2" style="margin:0">TIER 2</span></td>
                 <td style="color:var(--muted)">Construction</td><td>Oct 1, 2026</td>
                 <td><span class="kyc-badge kyc-current">CURRENT</span></td>
                 <td>8 days ago</td>
-                <td><span class="urgency-dot urgency-med"></span>Medium</td>
+                <td><span class="urgency-dot urgency-low"></span>Low</td>
               </tr>
-              <tr>
+              <tr onclick="showClient('Greenlake Energy Services','TIER 2','Energy','Nov 30, 2026','OVERDUE','45 days ago')">
                 <td class="td-name">Greenlake Energy Services</td>
                 <td><span class="fab-tier tier-2" style="margin:0">TIER 2</span></td>
                 <td style="color:var(--muted)">Energy</td><td>Nov 30, 2026</td>
                 <td><span class="kyc-badge kyc-overdue">OVERDUE</span></td>
                 <td>45 days ago</td>
-                <td><span class="urgency-dot urgency-med"></span>Medium</td>
+                <td><span class="urgency-dot urgency-high"></span>High</td>
               </tr>
             </tbody>
           </table>
@@ -939,46 +949,39 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
     </div>
     <div class="content">
       <div class="stats-row">
-        <div class="stat-card"><div class="stat-label">Total Signals</div><div class="stat-value stat-blue">12</div><div class="stat-sub">Active in feed this week</div></div>
-        <div class="stat-card"><div class="stat-label">High Priority (≥70)</div><div class="stat-value stat-orange">3</div><div class="stat-sub">Require proactive RM outreach</div></div>
-        <div class="stat-card"><div class="stat-label">Client-Specific</div><div class="stat-value stat-yellow">4</div><div class="stat-sub">Linked to named accounts</div></div>
-        <div class="stat-card"><div class="stat-label">DQ Alert</div><div class="stat-value stat-orange">3</div><div class="stat-sub">High-relevance signals missing talking point</div></div>
+        <div class="stat-card"><div class="stat-label">DQ Alerts Active</div><div class="stat-value stat-blue">3</div><div class="stat-sub">Across governed tables</div></div>
+        <div class="stat-card"><div class="stat-label">KYC Issues</div><div class="stat-value stat-orange">1</div><div class="stat-sub">Greenlake Energy Services — OVERDUE</div></div>
+        <div class="stat-card"><div class="stat-label">Renewal At Risk</div><div class="stat-value stat-yellow">2</div><div class="stat-sub">Hartwell + Meridian flagged</div></div>
+        <div class="stat-card"><div class="stat-label">Lapse Risk</div><div class="stat-value stat-orange">1</div><div class="stat-sub">Vantage Logistics — 62d no contact</div></div>
       </div>
-      <div class="section-title" style="margin-bottom:14px">Active Signals — Ordered by Relevance Score</div>
+      <div class="section-title" style="margin-bottom:14px">Active DQ Alerts — Ordered by Priority</div>
 
       <div class="signal-card">
-        <div class="signal-header"><div class="signal-headline">Industrials Supply Chain Disruption — Fabricated Metals Procurement Costs Rise 8–12%</div><span class="signal-badge signal-negative">NEGATIVE · 9.2</span></div>
-        <div class="signal-meta">Jun 9, 2026 · Reuters · Manufacturing, Industrials · Client-specific: Meridian Manufacturing Group</div>
-        <div class="signal-detail">Tariff impacts and reduced domestic supplier capacity are driving procurement cost increases in the fabricated metals sector. Companies with floating-rate credit facilities may face margin compression in H2 2026.</div>
-        <div class="signal-action-box"><div class="signal-action-label">RM Talking Point (PNC Research)</div><div class="signal-action-text">With procurement costs up 8–12%, your manufacturing clients are likely seeing margin pressure — proactively offer working capital revolve increase or FX hedging expansion to bridge the cycle. Lead with this on your next Meridian call.</div></div>
-      </div>
-
-      <div class="signal-card">
-        <div class="signal-header"><div class="signal-headline">Meridian Manufacturing Announces $45M Ohio Facility Expansion</div><span class="signal-badge signal-positive">POSITIVE · 8.4</span></div>
-        <div class="signal-meta">May 28, 2026 · Business Wire · Manufacturing · Client-specific: Meridian Manufacturing Group</div>
-        <div class="signal-detail">Meridian announced a $45M expansion of its Ohio manufacturing campus beginning Q3 2026, citing strong order backlog and increasing domestic sourcing demand.</div>
-        <div class="signal-action-box"><div class="signal-action-label">RM Talking Point (PNC Research)</div><div class="signal-action-text">The Ohio build signals credit appetite increase — explore whether current revolving facility limit meets new capex needs. Construction period cash management = treasury management opportunity.</div></div>
+        <div class="signal-header"><div class="signal-headline">Greenlake Energy Services — KYC Review OVERDUE</div><span class="signal-badge signal-negative">OVERDUE · CRITICAL</span></div>
+        <div class="signal-meta">Source: KYC_COMPLIANCE DQ Monitor · Greenlake Energy Services</div>
+        <div class="signal-detail">Greenlake Energy Services has passed their KYC review deadline without completion. This represents active regulatory exposure — blocks facility drawdowns and material relationship changes until resolved.</div>
+        <div class="signal-action-box"><div class="signal-action-label">Required Action</div><div class="signal-action-text">Escalate to KYC analyst and Coverage Manager within 24 hours of review deadline. Do not initiate new product pitches or facility changes until REVIEW_STATUS = CURRENT.</div></div>
       </div>
 
       <div class="signal-card">
-        <div class="signal-header"><div class="signal-headline">Apex Industrial Holdings Appoints New Chief Executive Officer</div><span class="signal-badge signal-watch">WATCH · 7.6</span></div>
-        <div class="signal-meta">Jun 8, 2026 · Bloomberg · Industrial · Client-specific: Apex Industrial Holdings</div>
-        <div class="signal-detail">Board confirmed Sarah Chen as incoming CEO effective July 1. Leadership transitions typically trigger relationship reviews and banking partner reassessments within 90 days.</div>
-        <div class="signal-action-box"><div class="signal-action-label">RM Talking Point (PNC Research)</div><div class="signal-action-text">Schedule a relationship review with the incoming CEO before July 1. New leadership often reassesses banking relationships in the first 90 days — get in early and frame PNC as the incumbent partner for the growth agenda.</div></div>
+        <div class="signal-header"><div class="signal-headline">Hartwell Capital Partners — Renewal At Risk (19 days, KYC DUE SOON)</div><span class="signal-badge signal-negative">HIGH · 19 DAYS</span></div>
+        <div class="signal-meta">Source: CLIENT_BOOK DQ Monitor · Hartwell Capital Partners</div>
+        <div class="signal-detail">TIER 1 client with renewal Jun 30 2026. Last contact 31 days ago — exceeds 30-day TIER 1 threshold. KYC status DUE SOON adds complexity to renewal conversation.</div>
+        <div class="signal-action-box"><div class="signal-action-label">RM Talking Point</div><div class="signal-action-text">Schedule renewal conversation this week. Resolve KYC DUE SOON status before discussing facility changes. Competitor outreach window is open.</div></div>
       </div>
 
       <div class="signal-card">
-        <div class="signal-header"><div class="signal-headline">Federal Reserve Signals Gradual Rate Reduction Path Through Q4 2026</div><span class="signal-badge signal-watch">WATCH · 6.8</span></div>
-        <div class="signal-meta">Jun 7, 2026 · Federal Reserve · All Industries · Book-wide signal</div>
-        <div class="signal-detail">Fed guidance suggests 1–2 rate cuts by year-end dependent on inflation trajectory. Companies with floating-rate credit facilities may seek to lock in fixed-rate structures before cuts materialize.</div>
-        <div class="signal-action-box"><div class="signal-action-label">RM Talking Point (PNC Research)</div><div class="signal-action-text">Bring up in any renewal discussion — explore whether clients want to discuss fixed vs. floating rate structure. Capital Markets team can support rate structuring conversations on credit facilities renewing in H2.</div></div>
+        <div class="signal-header"><div class="signal-headline">Meridian Manufacturing Group — Renewal At Risk (33 days)</div><span class="signal-badge signal-negative">HIGH · 33 DAYS</span></div>
+        <div class="signal-meta">Source: CLIENT_BOOK DQ Monitor · Meridian Manufacturing Group</div>
+        <div class="signal-detail">TIER 1 client with renewal Jul 14 2026. Last contact 22 days ago — approaching 30-day TIER 1 threshold. No DQ blockers. Renewal conversation should begin this week.</div>
+        <div class="signal-action-box"><div class="signal-action-label">RM Talking Point</div><div class="signal-action-text">Proactive outreach recommended this week. Renewal window is open — no KYC or compliance blockers. Reference supply chain context in Industrial sector.</div></div>
       </div>
 
       <div class="signal-card">
-        <div class="signal-header"><div class="signal-headline">Private Equity Deal Flow Accelerating in North Central — Q2 Activity Up 22%</div><span class="signal-badge signal-positive">POSITIVE · 7.1</span></div>
-        <div class="signal-meta">Jun 5, 2026 · S&P Global · Financial Services · Client-specific: Hartwell Capital Partners</div>
-        <div class="signal-detail">Middle-market PE activity rebounding in North Central with Q2 deal flow up 22% YoY, driven by manufacturing and healthcare sectors.</div>
-        <div class="signal-action-box"><div class="signal-action-label">RM Talking Point (PNC Research)</div><div class="signal-action-text">Strong deal flow context for a Hartwell conversation — position PNC's Capital Markets and Credit capabilities for deal financing. KYC DUE_SOON — resolve before any product pitch.</div></div>
+        <div class="signal-header"><div class="signal-headline">Vantage Logistics LLC — TIER 2 Relationship Lapse (62 days)</div><span class="signal-badge signal-watch">WATCH · 62 DAYS</span></div>
+        <div class="signal-meta">Source: CLIENT_BOOK DQ Monitor · Vantage Logistics LLC</div>
+        <div class="signal-detail">TIER 2 client with 62 days since last logged RM interaction — exceeds 45-day TIER 2 contact threshold. New procurement VP joined 3 weeks ago represents competitor vulnerability window.</div>
+        <div class="signal-action-box"><div class="signal-action-label">RM Talking Point</div><div class="signal-action-text">Re-engage this week. New leadership transition is both a risk and an opportunity. Reference Deposits cross-sell given incoming VP profile.</div></div>
       </div>
     </div>
   </div>
@@ -992,46 +995,32 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
     </div>
     <div class="content">
       <div class="stats-row">
-        <div class="stat-card"><div class="stat-label">Cross-Sell Opportunities</div><div class="stat-value stat-blue">5</div><div class="stat-sub">Identified by analytics team</div></div>
-        <div class="stat-card"><div class="stat-label">Revenue Opportunity</div><div class="stat-value stat-green">$3.1M</div><div class="stat-sub">Incremental annual fees if closed</div></div>
-        <div class="stat-card"><div class="stat-label">High Confidence (≥7.0)</div><div class="stat-value stat-orange">3</div><div class="stat-sub">Priority pitches this week</div></div>
-        <div class="stat-card"><div class="stat-label">Competitive Threats</div><div class="stat-value stat-orange">2</div><div class="stat-sub">HIGH or CRITICAL — escalate to RD</div></div>
+        <div class="stat-card"><div class="stat-label">Active Pipeline Deals</div><div class="stat-value stat-blue">8</div><div class="stat-sub">Across 6 C&IB relationships</div></div>
+        <div class="stat-card"><div class="stat-label">Weighted Pipeline</div><div class="stat-value stat-green">$48M</div><div class="stat-sub">ESTIMATED_FEE × PROBABILITY%</div></div>
+        <div class="stat-card"><div class="stat-label">Renewal Exposure</div><div class="stat-value stat-orange">$31.2M</div><div class="stat-sub">Hartwell + Meridian at risk</div></div>
+        <div class="stat-card"><div class="stat-label">DQ Pipeline Flags</div><div class="stat-value stat-orange">5</div><div class="stat-sub">3 stale deals + 2 missing fees</div></div>
       </div>
       <div class="section-title" style="margin-bottom:14px">Active Pipeline — Ordered by Priority Score</div>
 
       <div class="nba-card">
-        <div class="nba-header"><div class="nba-type nba-type-renewal">RENEWAL INITIATION · Meridian Manufacturing Group</div><div class="nba-confidence"><span class="confidence-label">Priority Score</span><span class="confidence-score confidence-high">94</span></div></div>
-        <div class="nba-title">Revolving Credit Facility Renewal — Jul 14 Deadline (38 days)</div>
-        <div class="nba-desc">Revenue at risk: $1.1M/yr. Competitive threat: MODERATE (JPM known to be in conversations). Given supply chain signal and Ohio expansion, strong case for facility limit expansion (+15–20%) and rate structure discussion. Open commitment from May 20 call not resolved — address before renewal terms.</div>
-        <div class="nba-signal-ref">↗ Triggered by: Supply chain signal (Jun 9) + Ohio expansion (May 28) · Pipeline stage: NEGOTIATING</div>
+        <div class="nba-header"><div class="nba-type nba-type-renewal">RENEWAL INITIATION · Hartwell Capital Partners</div><div class="nba-confidence"><span class="confidence-label">Priority</span><span class="confidence-score confidence-high" style="color:var(--red)">CRITICAL</span></div></div>
+        <div class="nba-title">Credit Facility Renewal — Jun 30 Deadline (19 days)</div>
+        <div class="nba-desc">Revenue at risk: $14.2M. KYC DUE SOON — must be resolved before renewal terms can be finalized. TIER 1 contact threshold exceeded (31 days). Competitor engagement possible. Pipeline stage: DOCUMENTATION.</div>
+        <div class="nba-signal-ref">↗ DQ Alert: Renewal At Risk + Relationship Lapse — TIER 1</div>
       </div>
 
       <div class="nba-card">
-        <div class="nba-header"><div class="nba-type nba-type-pitch">CROSS-SELL · Meridian Manufacturing Group</div><div class="nba-confidence"><span class="confidence-label">Priority Score</span><span class="confidence-score confidence-med">81</span></div></div>
-        <div class="nba-title">Treasury Management Expansion — Ohio Build Cash Positioning</div>
-        <div class="nba-desc">Revenue opportunity: $420K/yr. Meridian holds Controlled Disbursement only. $45M Ohio expansion creates 12–18 month capital deployment cycle — introduce ZBA structure or integrated payables. Peer companies at this revenue band typically hold 2–3 treasury products. Pipeline stage: IDENTIFIED.</div>
-        <div class="nba-signal-ref">↗ Triggered by: Ohio expansion announcement (May 28) · Wallet share gap: 2/7 categories active</div>
+        <div class="nba-header"><div class="nba-type nba-type-risk">COMPLIANCE ACTION · Greenlake Energy Services</div><div class="nba-confidence"><span class="confidence-label">Priority</span><span class="confidence-score confidence-high" style="color:var(--red)">CRITICAL</span></div></div>
+        <div class="nba-title">KYC OVERDUE — Blocks Facility Changes</div>
+        <div class="nba-desc">KYC review deadline passed. All facility drawdowns and material relationship changes blocked until REVIEW_STATUS = CURRENT. Open deal in DEAL_PIPELINE (Treasury Management, $3.8M estimated fee) cannot progress until resolved. Escalate within 24 hours.</div>
+        <div class="nba-signal-ref">↗ DQ Alert: Overdue KYC Review</div>
       </div>
 
       <div class="nba-card">
-        <div class="nba-header"><div class="nba-type nba-type-renewal">RENEWAL INITIATION · Hartwell Capital Partners</div><div class="nba-confidence"><span class="confidence-label">Priority Score</span><span class="confidence-score confidence-high">78</span></div></div>
-        <div class="nba-title">Treasury Management Contract — Jun 30 Renewal (19 days)</div>
-        <div class="nba-desc">Revenue at risk: $820K/yr. ⚠ KYC_STATUS = DUE_REVIEW — must not initiate new product pitch until KYC is current. Resolve KYC before renewal conversation. Competitive threat: LOW. Pipeline stage: PROPOSAL_SENT.</div>
-        <div class="nba-signal-ref">↗ PE deal flow signal positive for relationship expansion post-KYC resolution</div>
-      </div>
-
-      <div class="nba-card">
-        <div class="nba-header"><div class="nba-type nba-type-pitch">COMPETITIVE DEFENSE · Apex Industrial Holdings</div><div class="nba-confidence"><span class="confidence-label">Priority Score</span><span class="confidence-score confidence-med">76</span></div></div>
-        <div class="nba-title">CEO Transition — Relationship Protection Play</div>
-        <div class="nba-desc">Revenue at risk: $1.4M/yr (full book). Competitive threat: HIGH — new CEO Sarah Chen has existing relationships with Citi from prior role. Must schedule relationship review before July 1. Frame PNC as the established, trusted banking partner for the growth agenda. Escalated to Regional Director per policy.</div>
-        <div class="nba-signal-ref">↗ Triggered by: CEO change announcement (Jun 8) · Pipeline stage: IDENTIFIED</div>
-      </div>
-
-      <div class="nba-card">
-        <div class="nba-header"><div class="nba-type nba-type-pitch">CROSS-SELL · Vantage Logistics LLC</div><div class="nba-confidence"><span class="confidence-label">Priority Score</span><span class="confidence-score confidence-med">65</span></div></div>
-        <div class="nba-title">Deposits — Working Capital Optimization</div>
-        <div class="nba-desc">Revenue opportunity: $180K/yr. New procurement VP joined 3 weeks ago — good entry point for treasury conversation. 62 days since last contact (re-engagement required before pitch). Industry: Transportation seeing logistics cost normalization — working capital conversation timely. Pipeline stage: IDENTIFIED.</div>
-        <div class="nba-signal-ref">↗ Wallet share gap: Deposits not held · Last contact: Apr 9, 2026</div>
+        <div class="nba-header"><div class="nba-type nba-type-renewal">RENEWAL INITIATION · Meridian Manufacturing Group</div><div class="nba-confidence"><span class="confidence-label">Priority</span><span class="confidence-score confidence-high" style="color:var(--orange)">HIGH</span></div></div>
+        <div class="nba-title">Revolving Credit Facility Renewal — Jul 14 Deadline (33 days)</div>
+        <div class="nba-desc">Revenue at risk: $17M. Last contact 22 days ago — approaching TIER 1 threshold. No KYC or compliance blockers. Renewal conversation should begin this week. Supply chain signal active in Industrial sector — use as conversation opener.</div>
+        <div class="nba-signal-ref">↗ DQ Alert: Renewal At Risk — No Recent Contact</div>
       </div>
     </div>
   </div>
@@ -1045,64 +1034,64 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
     </div>
     <div class="content">
       <div class="stats-row">
-        <div class="stat-card"><div class="stat-label">Renewals — 30 Days</div><div class="stat-value stat-orange">3</div><div class="stat-sub">$1.93M at risk</div></div>
-        <div class="stat-card"><div class="stat-label">Renewals — 31–60 Days</div><div class="stat-value stat-yellow">3</div><div class="stat-sub">$0.84M at risk</div></div>
-        <div class="stat-card"><div class="stat-label">Renewals — 61–90 Days</div><div class="stat-value stat-blue">2</div><div class="stat-sub">$0.38M at risk</div></div>
-        <div class="stat-card"><div class="stat-label">DQ Alert</div><div class="stat-value stat-orange">6</div><div class="stat-sub">Active products missing expiry date — invisible to pipeline</div></div>
+        <div class="stat-card"><div class="stat-label">Critical (≤30d)</div><div class="stat-value stat-orange">1</div><div class="stat-sub">Hartwell Capital Partners — Jun 30</div></div>
+        <div class="stat-card"><div class="stat-label">High Risk (31–90d)</div><div class="stat-value stat-yellow">1</div><div class="stat-sub">Meridian Manufacturing Group — Jul 14</div></div>
+        <div class="stat-card"><div class="stat-label">Watch (91–180d)</div><div class="stat-value stat-blue">2</div><div class="stat-sub">Apex + Vantage</div></div>
+        <div class="stat-card"><div class="stat-label">KYC Blockers</div><div class="stat-value stat-orange">1</div><div class="stat-sub">Greenlake — OVERDUE blocks deals</div></div>
       </div>
       <div class="section-title" style="margin-bottom:14px">Renewal Pipeline — Ordered by Days to Close</div>
 
       <div class="data-table">
         <table>
-          <thead><tr><th>Client</th><th>Product</th><th>Expires</th><th>Days</th><th>Revenue at Risk</th><th>Competitive Threat</th><th>Recommended Action</th></tr></thead>
+          <thead><tr><th>Client</th><th>Product</th><th>Expires</th><th>Days</th><th>Revenue at Risk</th><th>KYC Status</th><th>Recommended Action</th></tr></thead>
           <tbody>
             <tr onclick="showClient('Hartwell Capital Partners','TIER 1','Financial Services','Jun 30, 2026','DUE SOON','31 days ago')">
-              <td><strong>Hartwell Capital Partners</strong><br><span style="font-size:11px;color:var(--muted)">TIER 1 · KYC DUE_REVIEW ⚠</span></td>
-              <td>Treasury Management Contract</td>
-              <td style="color:var(--orange);font-weight:700">Jun 30</td><td style="color:var(--orange);font-weight:700">19d</td>
-              <td>$820K</td>
-              <td><span style="color:var(--muted)">LOW</span></td>
-              <td style="font-size:11px">Resolve KYC DUE_REVIEW before initiating renewal. Schedule call by Jun 15.</td>
+              <td><strong>Hartwell Capital Partners</strong><br><span style="font-size:11px;color:var(--muted)">TIER 1 · Last contact 31 days ago</span></td>
+              <td>Credit Facility Renewal</td>
+              <td style="color:var(--red);font-weight:700">Jun 30</td><td style="color:var(--red);font-weight:700">19d</td>
+              <td style="color:var(--orange);font-weight:600">$14.2M</td>
+              <td><span class="kyc-badge kyc-due-soon">DUE SOON</span></td>
+              <td style="font-size:11px">Resolve KYC DUE SOON before renewal conversation. Schedule call this week.</td>
             </tr>
             <tr onclick="showClient('Meridian Manufacturing Group','TIER 1','Industrial Mfg','Jul 14, 2026','CURRENT','22 days ago')">
-              <td><strong>Meridian Manufacturing Group</strong><br><span style="font-size:11px;color:var(--muted)">TIER 1 · Open commitment overdue</span></td>
+              <td><strong>Meridian Manufacturing Group</strong><br><span style="font-size:11px;color:var(--muted)">TIER 1 · Last contact 22 days ago</span></td>
               <td>Revolving Credit Facility</td>
-              <td style="color:var(--orange);font-weight:700">Jul 14</td><td style="color:var(--orange);font-weight:700">38d</td>
-              <td>$1.1M</td>
-              <td><span style="color:var(--yellow)">MODERATE</span></td>
-              <td style="font-size:11px">Initiate renewal with expanded limit discussion. Address open May 20 commitment first.</td>
+              <td style="color:var(--orange);font-weight:700">Jul 14</td><td style="color:var(--orange);font-weight:700">33d</td>
+              <td style="color:var(--orange);font-weight:600">$17M</td>
+              <td><span class="kyc-badge kyc-current">CURRENT</span></td>
+              <td style="font-size:11px">Begin renewal conversation this week. No compliance blockers. Use supply chain signal as opener.</td>
             </tr>
-            <tr onclick="showClient('Cornerstone Building Products','TIER 2','Construction','Oct 1, 2026','CURRENT','8 days ago')">
-              <td><strong>Cornerstone Building Products</strong><br><span style="font-size:11px;color:var(--muted)">TIER 2 · Healthy relationship</span></td>
-              <td>Commercial Card Program</td>
-              <td>Jul 22</td><td>46d</td>
-              <td>$310K</td>
-              <td><span style="color:var(--muted)">NONE</span></td>
-              <td style="font-size:11px">Standard renewal — send pricing proposal. Cross-sell: Advisory product (confidence 7.1).</td>
+            <tr onclick="showClient('Apex Industrial Holdings','TIER 1','Industrial','Aug 2, 2026','CURRENT','14 days ago')">
+              <td><strong>Apex Industrial Holdings</strong><br><span style="font-size:11px;color:var(--muted)">TIER 1 · CEO change risk</span></td>
+              <td>FX Hedging Programme</td>
+              <td>Aug 2</td><td>53d</td>
+              <td>$2.1M</td>
+              <td><span class="kyc-badge kyc-current">CURRENT</span></td>
+              <td style="font-size:11px">Schedule CEO relationship review before Jul 1. Protect relationship before renewal.</td>
             </tr>
             <tr onclick="showClient('Vantage Logistics LLC','TIER 2','Transportation','Sep 15, 2026','CURRENT','62 days ago')">
               <td><strong>Vantage Logistics LLC</strong><br><span style="font-size:11px;color:var(--muted)">TIER 2 · Re-engagement required</span></td>
               <td>Payments Facility</td>
-              <td>Aug 5</td><td>60d</td>
-              <td>$285K</td>
-              <td><span style="color:var(--muted)">LOW</span></td>
+              <td>Sep 15</td><td>97d</td>
+              <td>$1.4M</td>
+              <td><span class="kyc-badge kyc-current">CURRENT</span></td>
               <td style="font-size:11px">Re-engage before renewal. New procurement VP — introduce Deposits cross-sell alongside renewal.</td>
             </tr>
-            <tr onclick="showClient('Apex Industrial Holdings','TIER 1','Industrial','Aug 2, 2026','CURRENT','14 days ago')">
-              <td><strong>Apex Industrial Holdings</strong><br><span style="font-size:11px;color:var(--muted)">TIER 1 · CEO change risk</span></td>
-              <td>FX Forward Contract</td>
-              <td>Aug 12</td><td>67d</td>
-              <td>$420K</td>
-              <td><span style="color:var(--red)">HIGH ↑ RD</span></td>
-              <td style="font-size:11px">Schedule CEO relationship review before Jul 1. Do not let renewal process before relationship is secured with new leadership.</td>
+            <tr onclick="showClient('Cornerstone Building Products','TIER 2','Construction','Oct 1, 2026','CURRENT','8 days ago')">
+              <td><strong>Cornerstone Building Products</strong><br><span style="font-size:11px;color:var(--muted)">TIER 2 · Healthy relationship</span></td>
+              <td>Commercial Card Program</td>
+              <td>Oct 1</td><td>113d</td>
+              <td>$310K</td>
+              <td><span class="kyc-badge kyc-current">CURRENT</span></td>
+              <td style="font-size:11px">Standard renewal — send pricing proposal. Cross-sell: Advisory product in pipeline.</td>
             </tr>
             <tr onclick="showClient('Greenlake Energy Services','TIER 2','Energy','Nov 30, 2026','OVERDUE','45 days ago')">
               <td><strong>Greenlake Energy Services</strong><br><span style="font-size:11px;color:var(--red)">TIER 2 · KYC OVERDUE — No new pitches</span></td>
               <td>Interest Rate Swap</td>
-              <td>Sep 15</td><td>97d</td>
-              <td>$210K</td>
-              <td><span style="color:var(--muted)">LOW</span></td>
-              <td style="font-size:11px;color:var(--red)">⚠ KYC OVERDUE — engage compliance before any product conversation. Re-engage RM after KYC resolved.</td>
+              <td>Nov 30</td><td>173d</td>
+              <td>$3.8M</td>
+              <td><span class="kyc-badge kyc-overdue">OVERDUE</span></td>
+              <td style="font-size:11px;color:var(--red)">⚠ KYC OVERDUE — escalate to compliance before any product conversation.</td>
             </tr>
           </tbody>
         </table>
@@ -1179,19 +1168,19 @@ tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
     <div class="agent-title"><div class="agent-status"></div> RM Prep Agent</div>
     <div class="agent-close" onclick="toggleAgent()">✕</div>
   </div>
-  <div class="agent-bound">Grounded on: <span>RM Client Intelligence — C&IB Pre-Meeting Brief</span></div>
+  <div class="agent-bound">Grounded on: <span>PNC RM Intelligence</span> · <span style="color:var(--muted)">DEMO_BUILDER.PNC_DEMO_V4</span></div>
   <div class="agent-messages" id="agent-messages">
     <div class="msg msg-agent">
       <div class="msg-label">RM PREP AGENT</div>
-      <div class="msg-bubble">Good morning, Jennifer. You have 5 Fab Five clients today — Meridian Manufacturing Group is ranked #1 with an urgency score of 94.<br><br>There's a NEGATIVE market signal on their sector this morning (supply chain disruption, Industrials) and the revolving credit facility renewal is 38 days out. You also have an open commitment from your May 20 call that hasn't been followed up.<br><br>Ask me anything about Meridian, or pull a brief for any client on your list.</div>
-      <div class="msg-sources"><span class="source-chip">RM_CLIENT_PROFILES</span><span class="source-chip">RM_MARKET_SIGNALS</span><span class="source-chip">RM_FAB_FIVE_DAILY</span></div>
+      <div class="msg-bubble">Good morning, Jennifer. Here's your C&IB portfolio summary for today.<br><br><strong>2 TIER 1 renewals at risk:</strong> Hartwell Capital Partners (Jun 30 — 19 days, KYC DUE SOON) and Meridian Manufacturing Group (Jul 14 — 33 days).<br><br><strong>1 KYC OVERDUE:</strong> Greenlake Energy Services — blocks all facility changes until resolved. Escalate within 24 hours.<br><br><strong>1 relationship lapse:</strong> Vantage Logistics LLC — 62 days since last contact, exceeds TIER 2 threshold.<br><br>Ask me about any client, your weighted pipeline value, or your DQ alerts.</div>
+      <div class="msg-sources"><span class="source-chip">CLIENT_BOOK</span><span class="source-chip">KYC_COMPLIANCE</span><span class="source-chip">DEAL_PIPELINE</span></div>
     </div>
   </div>
   <div class="agent-input-area">
     <div class="agent-suggestions" id="agent-suggestions">
-      <div class="agent-sug" onclick="sendSuggestion(this)">Tell me everything about Meridian before my 10am call</div>
-      <div class="agent-sug" onclick="sendSuggestion(this)">Are there any data quality issues I should know before relying on these briefs?</div>
-      <div class="agent-sug" onclick="sendSuggestion(this)">Which clients have renewals in the next 60 days and what should I be pitching?</div>
+      <div class="agent-sug" onclick="sendSuggestion(this)">Give me a summary of our C&IB portfolio — clients, tiers, and the overall renewal picture</div>
+      <div class="agent-sug" onclick="sendSuggestion(this)">Which TIER 1 clients have renewals in the next 90 days and haven't been contacted in 30 days?</div>
+      <div class="agent-sug" onclick="sendSuggestion(this)">Are there any data quality issues I should know before I trust these signals?</div>
     </div>
     <div class="agent-input-row">
       <input class="agent-input" id="agent-input" type="text" placeholder="Ask about any client or your book..." onkeydown="if(event.key==='Enter')sendMessage()">
@@ -1260,7 +1249,12 @@ function showClient(name, tier, industry, renewal, kyc, lastContact) {
     const nameEl = document.querySelector('.client-name');
     if (nameEl) nameEl.textContent = name;
     const metaEl = document.querySelector('.client-meta');
-    if (metaEl) metaEl.innerHTML = `${industry} &nbsp;·&nbsp; <strong>${tier}</strong> &nbsp;·&nbsp; <span id="kyc-status-display">${kyc}</span> &nbsp;·&nbsp; Last contact: ${lastContact}`;
+    if (metaEl) {
+      let kycColor = 'var(--green)';
+      if (kyc === 'OVERDUE') kycColor = 'var(--red)';
+      else if (kyc === 'DUE SOON') kycColor = 'var(--yellow)';
+      metaEl.innerHTML = `${industry} &nbsp;·&nbsp; <strong>${tier}</strong> &nbsp;·&nbsp; <span id="kyc-status-display" style="color:${kycColor};font-weight:700">${kyc}</span> &nbsp;·&nbsp; Last contact: ${lastContact}`;
+    }
     const renewalEl = document.querySelector('.client-stat-value.stat-orange, .client-stat-value');
     if (renewalEl) renewalEl.textContent = renewal;
     // Update modal subtitle

@@ -1209,7 +1209,7 @@ function checkPw() {
     document.getElementById('pw-gate').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     initDynamicDate();
-    if (getRefreshToken()) {
+    if (getStoredToken()) {
       const ind = document.getElementById('token-indicator');
       if (ind) { ind.textContent = '✓ Agent Connected'; ind.style.background='rgba(45,184,122,0.15)'; ind.style.borderColor='rgba(45,184,122,0.4)'; ind.style.color='#2DB87A'; }
     }
